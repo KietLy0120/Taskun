@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "88356992647",
+    "project_id": "rpgtaskmanagement",
+    "storage_bucket": "rpgtaskmanagement.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:88356992647:android:46ecac909b3ec90c60aa22",
+        "android_client_info": {
+          "package_name": "com.ggc.taskun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDOb-1Q0kABzyT2y7Y5fokXBAal-hsPpYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
