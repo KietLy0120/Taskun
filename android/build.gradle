@@ -1,11 +1,12 @@
 buildscript {
+    ext.kotlin_version = '1.9.0' // Use a stable version
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4' // Use the latest version
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.25"
+        classpath 'com.android.tools.build:gradle:8.3.2' // Use the latest version
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0"
         classpath 'com.google.gms:google-services:4.4.2' // Add this for firebase
     }
 }
