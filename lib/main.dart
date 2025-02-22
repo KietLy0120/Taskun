@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:taskun/battle_screen.dart';
 import 'firebase_options.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
@@ -29,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
         '/home': (context) =>  HomeScreen(),
+        '/battle': (context) =>  BattleScreen(),
       },
     );
   }
