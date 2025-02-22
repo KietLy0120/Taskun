@@ -8,6 +8,8 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +25,7 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Taskun",
                   style: TextStyle(
                     fontFamily: 'PixelFont',
@@ -32,9 +34,9 @@ class LoginScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(15),
@@ -50,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                           labelText: "Username",
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Password Input
                       TextField(
                         controller: _passwordController,
@@ -62,14 +64,14 @@ class LoginScreen extends StatelessWidget {
                         ),
                         obscureText: true,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Forgot Password & Sign Up Links
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           TextButton(
                             onPressed: () {},
-                            child: Text("Forgot Password?", style: TextStyle(color: Colors.white)),
+                            child: const Text("Forgot Password?", style: TextStyle(color: Colors.white)),
                           ),
                           TextButton(
                             onPressed: () {
@@ -78,11 +80,11 @@ class LoginScreen extends StatelessWidget {
                                 MaterialPageRoute(builder: (context) => SignupScreen()),
                               );
                             },
-                            child: Text("Create Account", style: TextStyle(color: Colors.white)),
+                            child: const Text("Create Account", style: TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Log In Button
                       ElevatedButton(
                         onPressed: () async {
@@ -94,17 +96,17 @@ class LoginScreen extends StatelessWidget {
                             Navigator.pushReplacementNamed(context, '/home');
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Login failed. Please try again.")),
+                              const SnackBar(content: Text("Login failed. Please try again.")),
                             );
                           }
                         },
-                        child: Text('Login'),
+                        child: const Text('Login'),
                       ),
-                      SizedBox(height: 10),
-                      Text("Log in with other apps", style: TextStyle(color: Colors.white)),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
+                      const Text("Log in with other apps", style: TextStyle(color: Colors.white)),
+                      const SizedBox(height: 10),
                       // Social Media Icons
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.facebook, color: Colors.blue, size: 40),

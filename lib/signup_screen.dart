@@ -9,13 +9,15 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _verificationController = TextEditingController();
 
+  SignupScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage("assets/background.gif"),
                 fit: BoxFit.cover,
@@ -26,7 +28,7 @@ class SignupScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   "Taskun",
                   style: TextStyle(
                     fontFamily: 'PixelFont',
@@ -35,9 +37,9 @@ class SignupScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Container(
-                  padding: EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(15),
@@ -54,7 +56,7 @@ class SignupScreen extends StatelessWidget {
                           labelText: "Username",
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Email
                       TextField(
                         controller: _emailController,
@@ -65,7 +67,7 @@ class SignupScreen extends StatelessWidget {
                           labelText: "Email",
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Password
                       TextField(
                         controller: _passwordController,
@@ -77,7 +79,7 @@ class SignupScreen extends StatelessWidget {
                         ),
                         obscureText: true,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Verification Code
                       Row(
                         children: [
@@ -92,17 +94,17 @@ class SignupScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           ElevatedButton(
                             onPressed: () {},
-                            child: Text("60s"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey,
                             ),
+                            child: const Text("60s"),
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       // Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,7 +114,7 @@ class SignupScreen extends StatelessWidget {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
-                            child: Text("Back"),
+                            child: const Text("Back"),
                           ),
                           ElevatedButton(
                             onPressed: () async {
@@ -125,7 +127,7 @@ class SignupScreen extends StatelessWidget {
                                   Navigator.pushReplacementNamed(context, '/home');
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Sign-up failed. Please try again.")),
+                                    const SnackBar(content: Text("Sign-up failed. Please try again.")),
                                   );
                                 }
                               } catch (e) {
@@ -135,7 +137,7 @@ class SignupScreen extends StatelessWidget {
                               }
                             },
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent),
-                            child: Text("Sign Up"),
+                            child: const Text("Sign Up"),
                           ),
 
                         ],

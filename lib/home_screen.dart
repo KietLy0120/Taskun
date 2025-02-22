@@ -5,14 +5,16 @@ import 'login_screen.dart';
 class HomeScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
 
+  HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home"),
+        title: const Text("Home"),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
@@ -29,9 +31,9 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(
               "Welcome, ${user?.email ?? "User"}!",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
@@ -41,7 +43,7 @@ class HomeScreen extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: Text("Logout"),
+              child: const Text("Logout"),
             ),
           ],
         ),
