@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'battle_screen.dart';
 import 'home_screen.dart';
+import 'calendar_screen.dart';
+import 'inventory_screen.dart';
+import 'setting_screen.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -16,45 +19,39 @@ class CustomBottomNavBar extends StatelessWidget {
     }
 
     // Navigate to the appropriate screen based on the tapped index.
+    Widget screen;
     switch (index) {
       case 0:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
+        screen = HomeScreen();
         break;
       case 1:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => BattleScreen()),
-        );
+        screen = BattleScreen();
         break;
       case 2:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
-        );
+        screen = CalendarScreen();
         break;
       case 3:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => BattleScreen()),
-        );
+        screen = HomeScreen();
         break;
       case 4:
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => BattleScreen()),
-        );
+        screen = HomeScreen();
         break;
+      default:
+        return; // Do nothing if index is out of range
     }
+
+    // Replace the current screen with the selected one
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => screen),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.grey.withOpacity(0.3),
+      backgroundColor: Colors.indigo.withOpacity(0.3),
       elevation: 0,
       // Change the label and icon colors when selected/unselected.
       selectedItemColor: Colors.white,      // Selected color (adjust as needed)
