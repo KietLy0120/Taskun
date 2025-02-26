@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'add_button.dart';
+import 'add_modal.dart';
 import 'login_screen.dart';
 import 'navigation_bar.dart';
 
@@ -11,21 +13,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("Home"),
-      //   actions: [
-      //     IconButton(
-      //       icon: const Icon(Icons.logout),
-      //       onPressed: () async {
-      //         await FirebaseAuth.instance.signOut();
-      //         Navigator.pushReplacement(
-      //           context,
-      //           MaterialPageRoute(builder: (context) => LoginScreen()),
-      //         );
-      //       },
-      //     )
-      //   ],
-      // ),
       body: Stack(
         children: [
           // Background image covering the entire screen
@@ -35,10 +22,8 @@ class HomeScreen extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          // Column holding the main content and the custom bottom nav bar
           Column(
             children: [
-              // Expanded widget takes all available space above the nav bar
               Expanded(
                 child: Center(
                   child: Column(
@@ -47,8 +32,8 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         "Welcome, ${user?.email ?? "User"}!",
                         style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -69,12 +54,19 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
-              // Custom bottom navigation bar placed at the bottom of the Column
+              // Floating action button aligned above bottom navigation
+              Padding(
+                padding: const EdgeInsets.only(right: 20, bottom: 10),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: CustomAddButton(
+                    onPressed: () => AddModal.show(context),
+                  ),
+                ),
+              ),
               CustomBottomNavBar(
-                selectedIndex: 0, // Update with proper state management if needed
-                onItemTapped: (index) {
-                  // Handle navigation based on index
-                },
+                selectedIndex: 0,
+                onItemTapped: (index) {},
               ),
             ],
           ),
