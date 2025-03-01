@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'auth_service.dart';
-import 'signup_screen.dart';
+import '../auth/auth_service.dart';
+import '../auth/signup_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final AuthService _auth = AuthService();
@@ -17,7 +17,7 @@ class LoginScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              "assets/background.gif",
+              "assets/backgrounds/background.gif",
               fit: BoxFit.cover,
             ),
           ),

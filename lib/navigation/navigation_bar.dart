@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'battle_screen.dart';
-import 'home_screen.dart';
-import 'calendar_screen.dart';
-import 'inventory_screen.dart';
-import 'setting_screen.dart';
+import '../screens/battle_screen.dart';
+import '../screens/home_screen.dart';
+import '../screens/calendar_screen.dart';
+import '../screens/inventory_screen.dart';
+import '../screens/setting_screen.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -79,28 +79,28 @@ class CustomBottomNavBar extends StatelessWidget {
       unselectedItemColor: Colors.blue,
       items: [
         BottomNavigationBarItem(
-          icon: _buildIcon('assets/icon-home.png'),
-          activeIcon: _buildActiveIcon('assets/icon-home.png'),
+          icon: _buildIcon('assets/icons/icon-home.png'),
+          activeIcon: _buildActiveIcon('assets/icons/icon-home.png'),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: _buildIcon('assets/icon-sword.png'),
-          activeIcon: _buildActiveIcon('assets/icon-sword.png'),
+          icon: _buildIcon('assets/icons/icon-sword.png'),
+          activeIcon: _buildActiveIcon('assets/icons/icon-sword.png'),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: _buildIcon('assets/icon-paper.png'),
-          activeIcon: _buildActiveIcon('assets/icon-paper.png'),
+          icon: _buildIcon('assets/icons/icon-paper.png'),
+          activeIcon: _buildActiveIcon('assets/icons/icon-paper.png'),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: _buildIcon('assets/icon-bag.png'),
-          activeIcon: _buildActiveIcon('assets/icon-bag.png'),
+          icon: _buildIcon('assets/icons/icon-bag.png'),
+          activeIcon: _buildActiveIcon('assets/icons/icon-bag.png'),
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: _buildIcon('assets/icon-angel.png'),
-          activeIcon: _buildActiveIcon('assets/icon-angel.png'),
+          icon: _buildIcon('assets/icons/icon-angel.png'),
+          activeIcon: _buildActiveIcon('assets/icons/icon-angel.png'),
           label: '',
         ),
       ],

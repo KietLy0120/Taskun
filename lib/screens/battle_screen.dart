@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'navigation_bar.dart';
+import '../navigation/navigation_bar.dart';
 
 class BattleScreen extends StatelessWidget {
   BattleScreen({super.key});
@@ -13,7 +13,7 @@ class BattleScreen extends StatelessWidget {
           // Background image covering the entire screen, including behind the navbar
           Positioned.fill(
             child: Image.asset(
-              'assets/background2.gif', // Replace with your asset path
+              'assets/backgrounds/background2.gif', // Replace with your asset path
               fit: BoxFit.cover,
             ),
           ),

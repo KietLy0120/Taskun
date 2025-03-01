@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:taskun/battle_screen.dart';
+import 'package:taskun/screens/battle_screen.dart';
 import 'firebase_options.dart';
-import 'login_screen.dart';
-import 'signup_screen.dart';
-import 'home_screen.dart';
+import 'auth/login_screen.dart';
+import 'auth/signup_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

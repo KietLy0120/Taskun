@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'calendar.dart';
-import 'navigation_bar.dart';
+import '../widgets/calendar.dart';
+import '../navigation/navigation_bar.dart';
 
 class CalendarScreen extends StatelessWidget {
   const CalendarScreen({super.key});
@@ -16,7 +16,7 @@ class CalendarScreen extends StatelessWidget {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage("assets/background3.gif"),
+                  image: AssetImage("assets/backgrounds/background3.gif"),
                   fit: BoxFit.cover,
                 ),
               ),

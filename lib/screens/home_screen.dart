@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'add_button.dart';
-import 'add_modal.dart';
-import 'login_screen.dart';
-import 'navigation_bar.dart';
+import '../widgets/add_button.dart';
+import '../widgets/add_modal.dart';
+import '../auth/login_screen.dart';
+import '../navigation/navigation_bar.dart';
 
 class HomeScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -18,7 +18,7 @@ class HomeScreen extends StatelessWidget {
           // Background image covering the entire screen
           Positioned.fill(
             child: Image.asset(
-              "assets/home-bg.png",
+              "assets/backgrounds/home-bg.png",
               fit: BoxFit.cover,
             ),
           ),
