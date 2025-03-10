@@ -4,6 +4,7 @@ import '../widgets/add_button.dart';
 import '../widgets/add_modal.dart';
 import '../auth/login_screen.dart';
 import '../navigation/navigation_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -15,59 +16,39 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image covering the entire screen
           Positioned.fill(
-            child: Image.asset(
-              "assets/backgrounds/home-bg.png",
-              fit: BoxFit.cover,
-            ),
+            child: Image.asset("assets/backgrounds/home-bg.png", fit: BoxFit.cover),
           ),
           Column(
             children: [
               Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Welcome, ${user?.email ?? "User"}!",
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await FirebaseAuth.instance.signOut();
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginScreen()),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                        ),
-                        child: const Text("Logout"),
-                      ),
-                    ],
-                  ),
+                child: StreamBuilder(
+                  stream: FirebaseFirestore.instance.collection('tasks').orderBy('createdAt', descending: true).snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(child: Text("No tasks found!"));
+                    }
+
+                    return ListView(
+                      children: snapshot.data!.docs.map((doc) {
+                        Map<String, dynamic> task = doc.data() as Map<String, dynamic>;
+                        return ListTile(
+                          title: Text(task['title']),
+                          subtitle: Text(task['description']),
+                          trailing: Text(task['category']),
+                        );
+                      }).toList(),
+                    );
+                  },
                 ),
               ),
-              // Floating action button aligned above bottom navigation
-              Padding(
-                padding: const EdgeInsets.only(right: 20, bottom: 10),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: CustomAddButton(
-                    onPressed: () => AddModal.show(context),
-                  ),
-                ),
+              CustomAddButton(
+                onPressed: () => AddModal.show(context),
               ),
-              CustomBottomNavBar(
-                selectedIndex: 0,
-                onItemTapped: (index) {},
-              ),
+              CustomBottomNavBar(selectedIndex: 0, onItemTapped: (index) {}),
             ],
           ),
         ],

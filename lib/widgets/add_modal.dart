@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_style.dart';
 
 class AddModal {
@@ -7,6 +8,12 @@ class AddModal {
     final TextEditingController descriptionController = TextEditingController();
     final TextEditingController categoryController = TextEditingController();
     final TextEditingController startDateController = TextEditingController();
+    final TextEditingController pointsController = TextEditingController();
+    final TextEditingController timeReminderController = TextEditingController();
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    String selectedType = "Task"; // Default selection
+    String repeatedValue = "None"; // Default repetition setting
 
     showModalBottomSheet(
       context: context,
@@ -16,7 +23,6 @@ class AddModal {
       ),
       backgroundColor: Colors.transparent, // Makes background transparent
       builder: (context) {
-        String selectedType = "Task"; // Default selection
         return StatefulBuilder(
           builder: (context, setState) {
             return Container(
@@ -30,28 +36,55 @@ class AddModal {
                   children: [
                     // Title Row with Close (X) and Save (✔)
                     Container(
-                      color: const Color(0xFF28619A), // Background for title row
+                      color: const Color(0xFF28619A),
                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
                             icon: const Icon(Icons.close, color: Colors.white),
-                            onPressed: () => Navigator.pop(context), // Close modal
+                            onPressed: () => Navigator.pop(context),
                           ),
                           const Text(
-                            "New Routine",
+                            "New Task",
                             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                           ),
                           IconButton(
                             icon: const Icon(Icons.check, color: Colors.white),
-                            onPressed: () {
+                            onPressed: () async {
                               // Handle save action
                               String title = titleController.text;
                               String description = descriptionController.text;
                               String category = categoryController.text;
-                              print("Saved: Title: $title, Description: $description, Type: $selectedType, Category: $category");
-                              Navigator.pop(context); // Close modal
+                              int points = int.tryParse(pointsController.text) ?? 0;
+                              String startDate = startDateController.text;
+                              String timeReminder = timeReminderController.text;
+
+                              if (title.isEmpty || description.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Title and description cannot be empty!")),
+                                );
+                                return;
+                              }
+
+                              try {
+                                await firestore.collection('tasks').add({
+                                  'title': title,
+                                  'description': description,
+                                  'type': selectedType,
+                                  'category': category,
+                                  'points': points,
+                                  'startDate': startDate,
+                                  'timeReminder': timeReminder,
+                                  'repeated': repeatedValue,
+                                  'createdAt': FieldValue.serverTimestamp(),
+                                });
+                                Navigator.pop(context); // Close modal after saving
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Failed to add task: $e")),
+                                );
+                              }
                             },
                           ),
                         ],
@@ -60,159 +93,89 @@ class AddModal {
 
                     // Content area below the title row
                     Container(
-                      color: const Color(0xFF0F3376), // Background for main content
+                      color: const Color(0xFF0F3376),
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          // Title Field
-                          TextField(
-                            controller: titleController,
-                            decoration: customInputDecoration('Title'),
-                          ),
-                          const SizedBox(height: 25),
+                          TextField(controller: titleController, decoration: customInputDecoration('Title')),
+                          const SizedBox(height: 15),
+                          TextField(controller: descriptionController, decoration: customInputDecoration('Description')),
+                          const SizedBox(height: 15),
 
-                          // Description Field
-                          TextField(
-                            controller: descriptionController,
-                            decoration: customInputDecoration('Description'),
-                            maxLines: 1,
-                            maxLength: 100,
-                            buildCounter: (context, {int? currentLength, int? maxLength, bool? isFocused}) => null,
-                          ),
-                          const SizedBox(height: 25),
-
-                          // Row for Type and Category Fields
-                          Row(
-                            children: [
-                              // Type Dropdown
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  value: selectedType,
-                                  decoration: customInputDecoration('Type'),
-                                  dropdownColor: Colors.blueGrey,
-                                  isDense: true,
-                                  items: ["Task", "Habit"].map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value, style: const TextStyle(color: Colors.white)), // White text
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      selectedType = newValue!;
-                                    });
-                                  },
-                                ),
+                          Row(children: [
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                value: selectedType,
+                                decoration: customInputDecoration('Type'),
+                                dropdownColor: Colors.blueGrey,
+                                items: ["Task", "Habit"].map((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value, style: const TextStyle(color: Colors.white)),
+                                  );
+                                }).toList(),
+                                onChanged: (newValue) {
+                                  setState(() {
+                                    selectedType = newValue!;
+                                  });
+                                },
                               ),
-                              const SizedBox(width: 10), // Space between fields
-
-                              // Category Field
-                              Expanded(
-                                child: TextField(
-                                  controller: categoryController,
-                                  decoration: customInputDecoration('Category'),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[800], // Dark grey background
-                      ),
-                      child: Column(
-                        children: [
-                          // Points Field
-                          TextField(
-                            decoration: customInputDecoration('Points'),
-                            keyboardType: TextInputType.number,
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Row for Start Date and End Date
-                          Row(
-                            children: [
-                              Expanded(
-                                child: TextField(
-                                  controller: startDateController,
-                                  decoration: customInputDecoration('Start Date'),
-                                  readOnly: true, // Prevents manual input
-                                  onTap: () async {
-                                    DateTime? selectedDate = await showDatePicker(
-                                      context: context,
-                                      initialDate: DateTime.now(),
-                                      firstDate: DateTime(2000), // Set the first date that can be picked
-                                      lastDate: DateTime(2101), // Set the last date that can be picked
-                                    );
-
-                                    if (selectedDate != null) {
-                                      // Format the date as you prefer
-                                      String formattedDate = "${selectedDate.toLocal()}".split(' ')[0];
-                                      startDateController.text = formattedDate; // Update the text field with the selected date
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  decoration: customInputDecoration('End Date'),
-                                  readOnly: true, // Prevents manual input
-                                  onTap: () {
-                                    // Show date picker logic here
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          // Row for Repeated and Time Reminder
-                          Row(
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<String>(
-                                  decoration: customInputDecoration('Repeated'),
-                                  dropdownColor: Colors.blueGrey,
-                                  isDense: true,
-                                  isExpanded: true,
-                                  items: ["Daily", "Weekly", "Monthly", "None"].map((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value, style: const TextStyle(color: Colors.white)),
-                                    );
-                                  }).toList(),
-                                  onChanged: (newValue) {
-                                    // Handle selection
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: TextField(
-                                  decoration: customInputDecoration('Time Reminder'),
-                                  keyboardType: TextInputType.datetime,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          // Delete Button
-                          ElevatedButton(
-                            onPressed: () {
-                              print("Delete action");
-                              Navigator.pop(context);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
                             ),
-                            child: const Text("Delete"),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: TextField(
+                                controller: categoryController,
+                                decoration: customInputDecoration('Category'),
+                              ),
+                            ),
+                          ]),
+                          const SizedBox(height: 15),
+
+                          TextField(controller: pointsController, decoration: customInputDecoration('Points')),
+                          const SizedBox(height: 15),
+
+                          TextField(
+                            controller: startDateController,
+                            decoration: customInputDecoration('Start Date'),
+                            readOnly: true,
+                            onTap: () async {
+                              DateTime? selectedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2101),
+                              );
+                              if (selectedDate != null) {
+                                startDateController.text = "${selectedDate.toLocal()}".split(' ')[0];
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 15),
+
+                          TextField(controller: timeReminderController, decoration: customInputDecoration('Time Reminder')),
+                          const SizedBox(height: 20),
+
+                          DropdownButtonFormField<String>(
+                            decoration: customInputDecoration('Repeated'),
+                            dropdownColor: Colors.blueGrey,
+                            items: ["Daily", "Weekly", "Monthly", "None"].map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value, style: const TextStyle(color: Colors.white)),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                repeatedValue = newValue!;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 20),
+
+                          ElevatedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                            child: const Text("Cancel"),
                           ),
                         ],
                       ),
