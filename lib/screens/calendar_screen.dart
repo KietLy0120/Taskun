@@ -10,6 +10,7 @@ class CalendarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      extendBody: true,
       body: Stack(
         children: [
           Positioned.fill(
@@ -39,7 +40,7 @@ class CalendarScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min, // Makes the column wrap its content
                   children: [
                     // Icon underneath the Calendar
-                    Image.asset('assets/icon-calendar.png', width: 100, height: 150),
+                    Image.asset('assets/icons/icon-calendar.png', width: 100, height: 150),
 
                     const SizedBox(height: 8), // Adds spacing between the icon and the container
 
@@ -86,3 +87,33 @@ class CalendarScreen extends StatelessWidget {
     );
   }
 }
+
+/*
+using UnityEngine;
+using System.IO;
+
+public class Screenshot : MonoBehaviour
+{
+    public Camera cameraToRender;
+    public string screenshotFileName = "background.png";
+
+    void Start()
+    {
+        RenderTexture rt = new RenderTexture(400, 900, 24);
+        cameraToRender.targetTexture = rt;
+        RenderTexture.active = rt;
+        cameraToRender.Render();
+
+        Texture2D tex = new Texture2D(400, 900, TextureFormat.RGB24, false);
+        tex.ReadPixels(new Rect(0, 0, 400, 900), 0, 0);
+        tex.Apply();
+
+        byte[] bytes = tex.EncodeToPNG();
+        File.WriteAllBytes(screenshotFileName, bytes);
+
+        cameraToRender.targetTexture = null;
+        RenderTexture.active = null;
+        Destroy(rt);
+    }
+}
+ */
