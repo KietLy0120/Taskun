@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_style.dart';
@@ -52,7 +54,16 @@ class AddModal {
                           IconButton(
                             icon: const Icon(Icons.check, color: Colors.white),
                             onPressed: () async {
-                              // Handle save action
+                              final user = FirebaseAuth.instance.currentUser;
+                              if (user == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("You must be logged in to add a task!")),
+                                );
+                                return;
+                              }
+
+                              // Proceed with adding the task
+
                               String title = titleController.text;
                               String description = descriptionController.text;
                               String category = categoryController.text;
@@ -78,6 +89,8 @@ class AddModal {
                                   'timeReminder': timeReminder,
                                   'repeated': repeatedValue,
                                   'createdAt': FieldValue.serverTimestamp(),
+                                  'userId': user.uid, // Add the userId to associate the task with the user
+
                                 });
                                 Navigator.pop(context); // Close modal after saving
                               } catch (e) {
