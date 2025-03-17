@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../auth/auth_service.dart';
@@ -94,19 +93,7 @@ class LoginScreen extends StatelessWidget {
                             _passwordController.text.trim(),
                           );
                           if (user != null) {
-                            DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-                            if (userDoc.exists && userDoc.data() != null) {
-                              var userData = userDoc.data() as Map<String, dynamic>?;
-
-                              if (userData != null && userData['character'] != null) {
-                                Navigator.pushReplacementNamed(context, '/home');
-                              } else {
-                                Navigator.pushReplacementNamed(context, '/character-selection');
-                              }
-                            } else {
-                              Navigator.pushReplacementNamed(context, '/character-selection');
-                            }
-
+                            Navigator.pushReplacementNamed(context, '/home');
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text("Login failed. Please try again.")),
