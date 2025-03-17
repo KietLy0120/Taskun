@@ -4,21 +4,6 @@ import 'firebase_options.dart';
 import 'auth/login_screen.dart';
 import 'auth/signup_screen.dart';
 import 'screens/home_screen.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
-runApp(const MyApp());
-=======
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-
-import 'firebase_options.dart';
-import 'auth/login_screen.dart';
-import 'auth/signup_screen.dart';
-import 'screens/home_screen.dart';
 import 'screens/character_selection_screen.dart';
 
 void main() async {
@@ -43,7 +28,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Taskun',
 
-      home: LoginScreen(), // Set LoginScreen as the home screen
       initialRoute: '/', // Set the initial route to login
       routes: {
         '/': (context) => LoginScreen(), // Login screen
