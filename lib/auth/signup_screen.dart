@@ -125,6 +125,7 @@ class SignupScreen extends StatelessWidget {
                                 );
                                 if (user != null) {
                                   Navigator.pushReplacementNamed(context, '/character-selection');
+
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Sign-up failed. Please try again.")),

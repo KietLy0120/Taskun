@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'custom_style.dart';
@@ -62,6 +63,7 @@ class AddModal {
                               }
 
                               // Proceed with adding the task
+
                               String title = titleController.text;
                               String description = descriptionController.text;
                               String category = categoryController.text;
@@ -88,6 +90,7 @@ class AddModal {
                                   'repeated': repeatedValue,
                                   'createdAt': FieldValue.serverTimestamp(),
                                   'userId': user.uid, // Add the userId to associate the task with the user
+
                                 });
                                 Navigator.pop(context); // Close modal after saving
                               } catch (e) {

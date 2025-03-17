@@ -39,6 +39,7 @@ class HomeScreen extends StatelessWidget {
                       .where('userId', isEqualTo: user?.uid) // Filter tasks by userId
                       .orderBy('createdAt', descending: true)
                       .snapshots(),
+
                   builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());

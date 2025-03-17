@@ -106,6 +106,7 @@ class LoginScreen extends StatelessWidget {
                             } else {
                               Navigator.pushReplacementNamed(context, '/character-selection');
                             }
+
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(content: Text("Login failed. Please try again.")),

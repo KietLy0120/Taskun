@@ -1,8 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
 import 'firebase_options.dart';
-import 'login_screen.dart'; // Import the LoginScreen
+import 'auth/login_screen.dart';
+import 'auth/signup_screen.dart';
+import 'screens/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +33,6 @@ void main() async {
   } catch (e) {
     print('🔥 Firebase Initialization Error: $e');
   }
->>>>>>> Stashed changes
 }
 
 class MyApp extends StatelessWidget {
@@ -42,9 +42,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Taskun',
-<<<<<<< Updated upstream
+
       home: LoginScreen(), // Set LoginScreen as the home screen
-=======
       initialRoute: '/', // Set the initial route to login
       routes: {
         '/': (context) => LoginScreen(), // Login screen
@@ -52,7 +51,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomeScreen(), // Home screen
         '/character-selection': (context) => CharacterSelectionScreen(), // Character selection screen
       },
->>>>>>> Stashed changes
     );
   }
 }
