@@ -19,7 +19,7 @@ class SignupScreen extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/backgrounds/background.gif"),
+                image: AssetImage("assets/background.gif"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -124,8 +124,7 @@ class SignupScreen extends StatelessWidget {
                                   _passwordController.text.trim(),
                                 );
                                 if (user != null) {
-                                  Navigator.pushReplacementNamed(context, '/character-selection');
-
+                                  Navigator.pushReplacementNamed(context, '/home');
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Sign-up failed. Please try again.")),
