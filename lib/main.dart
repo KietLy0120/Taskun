@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'auth/login_screen.dart';
 import 'auth/signup_screen.dart';
 import 'screens/home_screen.dart';
+import 'screens/character_selection_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Taskun',
-      initialRoute: '/',
+      initialRoute: '/', // Set the initial route to login
       routes: {
         '/': (context) => LoginScreen(),
         '/signup': (context) => SignupScreen(),
