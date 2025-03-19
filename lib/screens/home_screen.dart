@@ -6,6 +6,9 @@ import '../auth/login_screen.dart';
 import '../navigation/navigation_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../widgets/daily_container.dart'; // Your updated DailyContainer widget
+import '../widgets/character_container.dart'; // Import CharacterContainer
+
 class HomeScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
 
@@ -27,43 +30,40 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
+          // Background image
           Positioned.fill(
-            child: Image.asset("assets/backgrounds/home-bg.png", fit: BoxFit.cover),
+            child: Image.asset(
+                "assets/backgrounds/home-bg.png",
+                fit: BoxFit.cover
+            ),
           ),
+
+          // Main content
           Column(
             children: [
+              // CharacterContainer takes up 1/3 of the screen height
+              Container(
+                height: MediaQuery.of(context).size.height / 3,  // 1/3 of the screen height
+                child: CharacterContainer(),
+              ),
+
+              // Expanded DailyContainer takes up the remaining space
               Expanded(
-                child: StreamBuilder(
-                  stream: FirebaseFirestore.instance
-                      .collection('tasks')
-                      .where('userId', isEqualTo: user?.uid) // Filter tasks by userId
-                      .orderBy('createdAt', descending: true)
-                      .snapshots(),
+                child: DailyContainer(user: user), // Your task container
+              ),
 
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    }
-                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return Center(child: Text("No tasks found!"));
-                    }
-
-                    return ListView(
-                      children: snapshot.data!.docs.map((doc) {
-                        Map<String, dynamic> task = doc.data() as Map<String, dynamic>;
-                        return ListTile(
-                          title: Text(task['title']),
-                          subtitle: Text(task['description']),
-                          trailing: Text(task['category']),
-                        );
-                      }).toList(),
-                    );
-                  },
+              // CustomAddButton at the bottom-right
+              Padding(
+                padding: const EdgeInsets.only(right: 20, bottom: 10),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: CustomAddButton(
+                    onPressed: () => AddModal.show(context),
+                  ),
                 ),
               ),
-              CustomAddButton(
-                onPressed: () => AddModal.show(context),
-              ),
+
+              // CustomBottomNavBar at the bottom
               CustomBottomNavBar(selectedIndex: 0, onItemTapped: (index) {}),
             ],
           ),

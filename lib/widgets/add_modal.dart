@@ -110,9 +110,9 @@ class AddModal {
                       padding: const EdgeInsets.all(20.0),
                       child: Column(
                         children: [
-                          TextField(controller: titleController, decoration: customInputDecoration('Title')),
+                          TextField(style: const TextStyle(color: Colors.white),controller: titleController, decoration: customInputDecoration('Title')),
                           const SizedBox(height: 15),
-                          TextField(controller: descriptionController, decoration: customInputDecoration('Description')),
+                          TextField(style: const TextStyle(color: Colors.white),controller: descriptionController, decoration: customInputDecoration('Description')),
                           const SizedBox(height: 15),
 
                           Row(children: [
@@ -137,6 +137,7 @@ class AddModal {
                             const SizedBox(width: 10),
                             Expanded(
                               child: TextField(
+                                style: const TextStyle(color: Colors.white),
                                 controller: categoryController,
                                 decoration: customInputDecoration('Category'),
                               ),
@@ -144,10 +145,11 @@ class AddModal {
                           ]),
                           const SizedBox(height: 15),
 
-                          TextField(controller: pointsController, decoration: customInputDecoration('Points')),
+                          TextField(style: const TextStyle(color: Colors.white),controller: pointsController, decoration: customInputDecoration('Points')),
                           const SizedBox(height: 15),
 
                           TextField(
+                            style: const TextStyle(color: Colors.white),
                             controller: startDateController,
                             decoration: customInputDecoration('Start Date'),
                             readOnly: true,
@@ -165,7 +167,7 @@ class AddModal {
                           ),
                           const SizedBox(height: 15),
 
-                          TextField(controller: timeReminderController, decoration: customInputDecoration('Time Reminder')),
+                          TextField(style: const TextStyle(color: Colors.white),controller: timeReminderController, decoration: customInputDecoration('Time Reminder')),
                           const SizedBox(height: 20),
 
                           DropdownButtonFormField<String>(

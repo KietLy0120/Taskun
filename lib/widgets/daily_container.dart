@@ -1,61 +1,169 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class TasksAndHabitsWidget extends StatelessWidget {
-  const TasksAndHabitsWidget({super.key});
+class DailyContainer extends StatefulWidget {
+  final User? user;
+
+  const DailyContainer({Key? key, required this.user}) : super(key: key);
 
   @override
+  _DailyContainerState createState() => _DailyContainerState();
+}
+
+class _DailyContainerState extends State<DailyContainer> {
+  @override
   Widget build(BuildContext context) {
-    String today = DateFormat('yyyy-MM-dd').format(DateTime.now()); // Get today's date
+    String todayDate = DateFormat('EEEE, MMM d, yyyy').format(DateTime.now());
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Today's Date
         Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(12.0),
           child: Text(
-            "Today - $today",
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            todayDate,
+            style: TextStyle(
+              color: Colors.white, // White color for the text
+              fontSize: 24, // Larger font size
+              fontWeight: FontWeight.bold, // Optional: Make it bold
+            ),
           ),
         ),
-
-        // Fetch Tasks & Habits from Firebase
-        Expanded(
+        Flexible(
           child: StreamBuilder(
             stream: FirebaseFirestore.instance
-                .collection('tasks') // Assuming 'tasks' is your collection
-                .where('date', isEqualTo: today) // Filter tasks for today
+                .collection('tasks')
+                .where('userId', isEqualTo: widget.user?.uid)
+                .orderBy('createdAt', descending: true)
                 .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const Center(child: Text("No tasks or habits for today!"));
+                return const Center(child: Text("No tasks found!"));
               }
 
-              var tasks = snapshot.data!.docs;
+              return ListView(
+                children: snapshot.data!.docs.map((doc) {
+                  Map<String, dynamic> task = doc.data() as Map<String, dynamic>;
+                  String taskId = doc.id;
 
-              return ListView.builder(
-                itemCount: tasks.length,
-                itemBuilder: (context, index) {
-                  var task = tasks[index];
-                  return ListTile(
-                    title: Text(task['title'] ?? 'No title'),
-                    subtitle: Text(task['type'] ?? 'Task/Habit'),
-                    leading: Icon(
-                      task['type'] == 'habit' ? Icons.repeat : Icons.check_circle,
-                      color: Colors.indigo,
-                    ),
+                  return TaskItem(
+                    taskId: taskId,
+                    title: task['title'],
+                    description: task['description'],
                   );
-                },
+                }).toList(),
               );
             },
           ),
         ),
       ],
+    );
+  }
+}
+
+class TaskItem extends StatefulWidget {
+  final String taskId;
+  final String title;
+  final String description;
+
+  const TaskItem({
+    Key? key,
+    required this.taskId,
+    required this.title,
+    required this.description,
+  }) : super(key: key);
+
+  @override
+  _TaskItemState createState() => _TaskItemState();
+}
+
+class _TaskItemState extends State<TaskItem> {
+  Color taskColor = Colors.grey[300]!;
+  Color upArrowColor = Colors.grey;
+  Color downArrowColor = Colors.grey;
+
+  void updateTaskColor(bool isUp) {
+    setState(() {
+      if (isUp) {
+        // If up arrow is already red, turn it back to grey
+        if (upArrowColor == Colors.red) {
+          taskColor = Colors.grey[300]!;
+          upArrowColor = Colors.grey;
+          downArrowColor = Colors.grey;
+        } else {
+          taskColor = Colors.red;
+          upArrowColor = Colors.red;
+          downArrowColor = Colors.grey;
+        }
+      } else {
+        // If down arrow is already blue, turn it back to grey
+        if (downArrowColor == Colors.blue) {
+          taskColor = Colors.grey[300]!;
+          downArrowColor = Colors.grey;
+          upArrowColor = Colors.grey;
+        } else {
+          taskColor = Colors.blue;
+          downArrowColor = Colors.blue;
+          upArrowColor = Colors.grey;
+        }
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: Icon(Icons.arrow_downward, color: downArrowColor),
+            onPressed: () => updateTaskColor(false),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: taskColor,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.white, width: 2),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    widget.title,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  Text(
+                    widget.description,
+                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.arrow_upward, color: upArrowColor),
+            onPressed: () => updateTaskColor(true),
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+        ],
+      ),
     );
   }
 }

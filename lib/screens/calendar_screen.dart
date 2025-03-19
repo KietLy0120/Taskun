@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../widgets/calendar.dart';
 import '../navigation/navigation_bar.dart';
 
@@ -10,6 +9,7 @@ class CalendarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      extendBody: true,
       body: Stack(
         children: [
           Positioned.fill(
@@ -54,7 +54,7 @@ class CalendarScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           const Text(
-                              "Nothing planned for today",
+                            "Nothing planned for today",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 16,
