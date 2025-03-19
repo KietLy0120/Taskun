@@ -10,6 +10,7 @@ class CalendarScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      extendBody: true,
       body: Stack(
         children: [
           Positioned.fill(
