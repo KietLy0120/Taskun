@@ -4,7 +4,7 @@ class CharacterContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white.withOpacity(0.2), // White background with 20% opacity
+      color: Colors.white.withOpacity(0.3), // White background with 20% opacity
       child: Column(
         children: [
           // Health Bar

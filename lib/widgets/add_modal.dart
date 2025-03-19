@@ -190,7 +190,7 @@ class AddModal {
                           ElevatedButton(
                             onPressed: () => Navigator.pop(context),
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                            child: const Text("Cancel"),
+                            child: const Text("Cancel", style: const TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
