@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+// import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart'; // For rootBundle
 
@@ -46,24 +46,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     });
 
     try {
-      // Upload character image to Firebase Storage and get the download URL
-      final characterImageUrl = await uploadImageToFirebaseStorage(
-        characters[selectedCharacter]!, // Asset path for the character image
-        'characters/${user!.uid}_${selectedCharacter!.toLowerCase()}.png',
-      );
-
-      // Upload pet image to Firebase Storage and get the download URL
-      final petImageUrl = await uploadImageToFirebaseStorage(
-        pets[selectedPet]!, // Asset path for the pet image
-        'pets/${user!.uid}_${selectedPet!.toLowerCase()}.png',
-      );
-
-      // Save the download URLs to Firestore
       await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
         'character': selectedCharacter,
-        'characterImageUrl': characterImageUrl,
         'pet': selectedPet,
-        'petImageUrl': petImageUrl,
       }, SetOptions(merge: true));
 
       Navigator.pushReplacementNamed(context, '/home');
@@ -78,21 +63,22 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     }
   }
 
-  // Helper function to upload an image to Firebase Storage and return the download URL
-  Future<String> uploadImageToFirebaseStorage(String assetPath, String storagePath) async {
-    // Load the image from assets as ByteData
-    final ByteData byteData = await rootBundle.load(assetPath);
 
-    // Convert ByteData to Uint8List
-    final Uint8List fileBytes = byteData.buffer.asUint8List();
-
-    // Upload the file to Firebase Storage
-    final storageRef = FirebaseStorage.instance.ref().child(storagePath);
-    await storageRef.putData(fileBytes);
-
-    // Return the download URL
-    return await storageRef.getDownloadURL();
-  }
+  // // Helper function to upload an image to Firebase Storage and return the download URL
+  // Future<String> uploadImageToFirebaseStorage(String assetPath, String storagePath) async {
+  //   // Load the image from assets as ByteData
+  //   final ByteData byteData = await rootBundle.load(assetPath);
+  //
+  //   // Convert ByteData to Uint8List
+  //   final Uint8List fileBytes = byteData.buffer.asUint8List();
+  //
+  //   // Upload the file to Firebase Storage
+  //   final storageRef = FirebaseStorage.instance.ref().child(storagePath);
+  //   await storageRef.putData(fileBytes);
+  //
+  //   // Return the download URL
+  //   return await storageRef.getDownloadURL();
+  // }
 
   @override
   Widget build(BuildContext context) {
