@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../navigation/navigation_bar.dart';
 import '../models/monster.dart';
+import '../models/AssetMapper.dart';
+
 
 class BattleScreen extends StatefulWidget {
   const BattleScreen({super.key});
@@ -12,11 +16,29 @@ class BattleScreen extends StatefulWidget {
 class _BattleScreenState extends State<BattleScreen> {
 
   late Monster selectedMonster; //store selected monster
+  String characterType = 'Warrior'; // Default values
+  String petType = 'Dog';
 
   @override
   void initState() {
     super.initState();
-    selectedMonster = monsters[0]; //Default to first monster in list
+    selectedMonster = monsters[0];
+    fetchCharacterAndPet();
+  }
+
+  Future<void> fetchCharacterAndPet() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      setState(() {
+        characterType = doc.data()?['character'] as String? ?? 'Warrior';
+        petType = doc.data()?['pet'] as String? ?? 'Dog';
+      });
+    }
   }
 
   void updateSelectedMonster(Monster newMonster) {
@@ -45,12 +67,12 @@ class _BattleScreenState extends State<BattleScreen> {
             left: 20,
             child: FloatingActionButton(
                 onPressed: () => _showInventoryPopup(context),
-              backgroundColor: Colors.indigo.withOpacity(0.6),
-              child: Image.asset(
-                'assets/icons/treasure_bronze_open.png',
-                width: 50,
-                height: 50,
-              )
+                backgroundColor: Colors.indigo.withOpacity(0.6),
+                child: Image.asset(
+                  'assets/icons/treasure_bronze_open.png',
+                  width: 50,
+                  height: 50,
+                )
             ),
           ),
           Positioned(
@@ -83,17 +105,22 @@ class _BattleScreenState extends State<BattleScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     //CHANGE TO USER'S CHARACTER
                     Image.asset(
-                      'assets/icons/character_kishi_man_01_blue_black.png',
-                      width: 70, height: 70,
+                      AssetMapper.getPetAsset(petType),
+                      width: 50, height: 50,
                     ),
-                    SizedBox(width: 180),
+                    const SizedBox(width:10),
+
+                    Image.asset(AssetMapper.getCharacterAsset(characterType),
+                      width:70, height:70,),
+
+                    const SizedBox(width: 170),
                     //CHANGE TO SELECTED ENEMY
                     Image.asset(
                       selectedMonster.imagePath,
@@ -158,50 +185,50 @@ class _BattleScreenState extends State<BattleScreen> {
 
   void _showBattlePopup(BuildContext context){
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.indigo.withOpacity(0.8),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
-          ),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.6,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'Battle Options',
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                    onPressed: () {
-                      //add battle action
-                    },
-                    child: const Text(
-                        "Start Battle"
-                    ),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("Close"),
-                ),
-              ]
-            )
-          )
-        );
-      }
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+              backgroundColor: Colors.indigo.withOpacity(0.8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Battle Options',
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            //add battle action
+                          },
+                          child: const Text(
+                              "Start Battle"
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Close"),
+                        ),
+                      ]
+                  )
+              )
+          );
+        }
     );
   }
 
