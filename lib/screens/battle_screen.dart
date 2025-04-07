@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../navigation/navigation_bar.dart';
 import '../models/monster.dart';
-import '../models/AssetMapper.dart';
+import '../helpers/AssetMapper.dart';
 
 
 class BattleScreen extends StatefulWidget {
