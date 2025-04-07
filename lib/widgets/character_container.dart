@@ -29,6 +29,7 @@ class CharacterContainer extends StatelessWidget {
         final data = snapshot.data!.data() as Map<String, dynamic>? ?? {};
         final character = data['character'] as String? ?? 'Warrior';
         final pet = data['pet'] as String? ?? 'Dog';
+        final String name = data['name'] ?? 'Player';
         return Container(
           color: Colors.white.withOpacity(0.3),
           child: Column(
@@ -53,8 +54,20 @@ class CharacterContainer extends StatelessWidget {
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(top: 5, left: 20),
+                child: Row(
+                  children: [
+                    Icon(Icons.stars_sharp, color: Colors.black),
+                    SizedBox(width: 5),
+                    Text(name, style: TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)
+                    ),
+                  ],
+                ),
+              ),
               SizedBox(
-                height: 180,
+                height: 145,
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [

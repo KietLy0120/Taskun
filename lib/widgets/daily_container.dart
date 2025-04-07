@@ -43,7 +43,38 @@ class _DailyContainerState extends State<DailyContainer> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return const Center(child: Text("No tasks found!"));
+                return  Center(
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/icon-calendar.png', width: 80, height: 130),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.indigo.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            children: [
+                              const Text(
+                                "Nothing planned for today",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              Text(
+                                "take it easy",
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(0.7),
+                                    fontSize: 14
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    )
+                );
               }
 
               return ListView(
