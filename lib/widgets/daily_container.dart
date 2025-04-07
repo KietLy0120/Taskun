@@ -55,6 +55,8 @@ class _DailyContainerState extends State<DailyContainer> {
                     taskId: taskId,
                     title: task['title'],
                     description: task['description'],
+                    points: task['points'] ?? 0, // Ensure default value if null
+                    user: widget.user, // Pass the user to TaskItem
                   );
                 }).toList(),
               );
@@ -70,12 +72,16 @@ class TaskItem extends StatefulWidget {
   final String taskId;
   final String title;
   final String description;
+  final int points;
+  final User? user;
 
   const TaskItem({
     Key? key,
     required this.taskId,
     required this.title,
     required this.description,
+    required this.points,
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -87,32 +93,55 @@ class _TaskItemState extends State<TaskItem> {
   Color upArrowColor = Colors.grey;
   Color downArrowColor = Colors.grey;
 
-  void updateTaskColor(bool isUp) {
-    setState(() {
-      if (isUp) {
-        // If up arrow is already red, turn it back to grey
-        if (upArrowColor == Colors.red) {
+  void updateTaskColor(bool isUp) async {
+    if (isUp) {
+      if (upArrowColor == Colors.red) {
+        setState(() {
           taskColor = Colors.grey[300]!;
           upArrowColor = Colors.grey;
           downArrowColor = Colors.grey;
-        } else {
+        });
+      } else {
+        setState(() {
           taskColor = Colors.red;
           upArrowColor = Colors.red;
           downArrowColor = Colors.grey;
-        }
-      } else {
-        // If down arrow is already blue, turn it back to grey
-        if (downArrowColor == Colors.blue) {
+        });
+
+        // Add points to user's coin balance
+        await _updateUserCoins(widget.points);
+      }
+    } else {
+      if (downArrowColor == Colors.blue) {
+        setState(() {
           taskColor = Colors.grey[300]!;
           downArrowColor = Colors.grey;
           upArrowColor = Colors.grey;
-        } else {
+        });
+      } else {
+        setState(() {
           taskColor = Colors.blue;
           downArrowColor = Colors.blue;
           upArrowColor = Colors.grey;
-        }
+        });
       }
-    });
+    }
+  }
+
+  Future<void> _updateUserCoins(int taskPoints) async {
+    if (widget.user != null) {
+      DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(widget.user!.uid);
+
+      FirebaseFirestore.instance.runTransaction((transaction) async {
+        DocumentSnapshot userDoc = await transaction.get(userRef);
+        if (!userDoc.exists) return;
+
+        int currentCoins = userDoc['coins'] ?? 0;
+        int newCoinValue = currentCoins + taskPoints;
+
+        transaction.update(userRef, {'coins': newCoinValue});
+      });
+    }
   }
 
   @override

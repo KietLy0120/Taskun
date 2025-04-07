@@ -1,6 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class CharacterContainer extends StatelessWidget {
+class CharacterContainer extends StatefulWidget {
+  final User? user;
+
+  const CharacterContainer({Key? key, required this.user}) : super(key: key);
+
+  @override
+  _CharacterContainerState createState() => _CharacterContainerState();
+}
+
+class _CharacterContainerState extends State<CharacterContainer> {
+  late int coins;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    if (widget.user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(widget.user!.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          coins = userDoc['coins'] ?? 0;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -9,12 +39,12 @@ class CharacterContainer extends StatelessWidget {
         children: [
           // Health Bar
           Padding(
-            padding: const EdgeInsets.only(top: 50, left: 20), // Reduced padding from top
+            padding: const EdgeInsets.only(top: 50, left: 20),
             child: Row(
               children: [
                 Icon(Icons.favorite, color: Colors.red),
                 SizedBox(width: 5),
-                Container(width: 80, height: 8, color: Colors.red), // Smaller health bar
+                Container(width: 80, height: 8, color: Colors.red),
               ],
             ),
           ),
@@ -26,7 +56,7 @@ class CharacterContainer extends StatelessWidget {
               children: [
                 Icon(Icons.bolt, color: Colors.blue),
                 SizedBox(width: 5),
-                Container(width: 80, height: 8, color: Colors.blue), // Smaller mana bar
+                Container(width: 80, height: 8, color: Colors.blue),
               ],
             ),
           ),
@@ -35,7 +65,7 @@ class CharacterContainer extends StatelessWidget {
           Container(
             height: 180, // Increased height to fit the larger character and pet
             child: Stack(
-              alignment: Alignment.bottomCenter, // Aligns everything at the bottom
+              alignment: Alignment.bottomCenter,
               children: [
                 // Ground image
                 Positioned(
@@ -44,7 +74,7 @@ class CharacterContainer extends StatelessWidget {
                     height: 60, // Ground height remains the same
                     decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/icons/ground.png"), // Replace with your ground image
+                        image: AssetImage("assets/icons/ground.png"),
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -55,11 +85,11 @@ class CharacterContainer extends StatelessWidget {
                 Positioned(
                   bottom: 0, // Position them on the ground
                   child: Row(
-                    mainAxisSize: MainAxisSize.min, // Makes the Row as small as needed
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Image.asset("assets/pets/dog.png", width: 60, height: 60), // Larger dog size
+                      Image.asset("assets/pets/dog.png", width: 60, height: 60),
                       SizedBox(width: 10),
-                      Image.asset("assets/characters/warrior.png", width: 90, height: 90), // Larger character size
+                      Image.asset("assets/characters/warrior.png", width: 90, height: 90),
                     ],
                   ),
                 ),
@@ -70,9 +100,9 @@ class CharacterContainer extends StatelessWidget {
                   right: 20,
                   child: Row(
                     children: [
-                      Icon(Icons.monetization_on, color: Colors.yellow, size: 24), // Smaller coin icon
+                      Icon(Icons.monetization_on, color: Colors.yellow, size: 24),
                       SizedBox(width: 5),
-                      Text("599", style: TextStyle(fontSize: 20, color: Colors.white)), // Smaller font size
+                      Text("$coins", style: TextStyle(fontSize: 20, color: Colors.white)),
                     ],
                   ),
                 ),

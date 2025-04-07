@@ -2,12 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/add_button.dart';
 import '../widgets/add_modal.dart';
-import '../auth/login_screen.dart';
 import '../navigation/navigation_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../widgets/daily_container.dart'; // Your updated DailyContainer widget
-import '../widgets/character_container.dart'; // Import CharacterContainer
+import '../widgets/daily_container.dart';
+import '../widgets/character_container.dart';
 
 class HomeScreen extends StatelessWidget {
   final User? user = FirebaseAuth.instance.currentUser;
@@ -44,7 +42,7 @@ class HomeScreen extends StatelessWidget {
               // CharacterContainer takes up 1/3 of the screen height
               Container(
                 height: MediaQuery.of(context).size.height / 3,  // 1/3 of the screen height
-                child: CharacterContainer(),
+                child: CharacterContainer(user : user),
               ),
 
               // Expanded DailyContainer takes up the remaining space
