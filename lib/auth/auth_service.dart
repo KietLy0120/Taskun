@@ -45,6 +45,7 @@ class AuthService {
             'email': email,
             'character': '',
             'pet': '',
+            'coins': 0,
             'createdAt': FieldValue.serverTimestamp(),
           });
           print("✔️ User registered and stored in Firestore!");

@@ -131,9 +131,41 @@ class EditModal {
                           const SizedBox(height: 20),
 
                           ElevatedButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () async {
+                              bool? confirmDelete = await showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: const Text("Delete Task"),
+                                  content: const Text("Are you sure you want to delete this task?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, false),
+                                      child: const Text("Cancel"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, true),
+                                      child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (confirmDelete == true) {
+                                try {
+                                  await firestore.collection('tasks').doc(taskId).delete();
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Task deleted successfully!")),
+                                  );
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("Failed to delete task: $e")),
+                                  );
+                                }
+                              }
+                            },
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                            child: const Text("Delete",style: const TextStyle(color: Colors.white)),
+                            child: const Text("Delete", style: TextStyle(color: Colors.white)),
                           ),
                         ],
                       ),
