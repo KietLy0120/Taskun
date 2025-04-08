@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import '../navigation/navigation_bar.dart';
 import '../models/monster.dart';
 import '../helpers/AssetMapper.dart';
+import '../widgets/inventory_modal.dart';
+import '../widgets/monsters_modal.dart';
+
 
 
 class BattleScreen extends StatefulWidget {
@@ -50,7 +53,8 @@ class _BattleScreenState extends State<BattleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true, // This allows the background to extend behind the navbar
+      extendBody: true,
+      // This allows the background to extend behind the navbar
       body: Stack(
         children: [
           // Background image covering the entire screen, including behind the navbar
@@ -66,8 +70,8 @@ class _BattleScreenState extends State<BattleScreen> {
             bottom: 110,
             left: 20,
             child: FloatingActionButton(
-                onPressed: () => _showInventoryPopup(context),
-                backgroundColor: Colors.indigo.withOpacity(0.6),
+                onPressed: () => showInventoryPopup(context),
+                backgroundColor: Colors.brown.shade800.withOpacity(0.9),
                 child: Image.asset(
                   'assets/icons/treasure_bronze_open.png',
                   width: 50,
@@ -92,8 +96,8 @@ class _BattleScreenState extends State<BattleScreen> {
             bottom: 110,
             right: 20,
             child: FloatingActionButton(
-                onPressed: () => _showMonstersPopup(context),
-                backgroundColor: Colors.indigo.withOpacity(0.6),
+                onPressed: () => showMonstersPopup(context, selectedMonster,updateSelectedMonster),
+                backgroundColor: Colors.blueGrey.withOpacity(0.6),
                 child: Image.asset(
                   monsters[2].imagePath,
                   width: 70,
@@ -115,10 +119,10 @@ class _BattleScreenState extends State<BattleScreen> {
                       AssetMapper.getPetAsset(petType),
                       width: 50, height: 50,
                     ),
-                    const SizedBox(width:10),
+                    const SizedBox(width: 10),
 
                     Image.asset(AssetMapper.getCharacterAsset(characterType),
-                      width:70, height:70,),
+                      width: 70, height: 70,),
 
                     const SizedBox(width: 170),
                     //CHANGE TO SELECTED ENEMY
@@ -143,7 +147,7 @@ class _BattleScreenState extends State<BattleScreen> {
     );
   }
 
-  void _showInventoryPopup(BuildContext context){
+  void _showBattlePopup(BuildContext context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -153,48 +157,14 @@ class _BattleScreenState extends State<BattleScreen> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Inventory',
-                          style: TextStyle(
-                            fontSize: 24,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("Close"),
-                        ),
-                      ]
-                  )
-              )
-          );
-        }
-    );
-  }
-
-  void _showBattlePopup(BuildContext context){
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-              backgroundColor: Colors.indigo.withOpacity(0.8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  height: MediaQuery.of(context).size.height * 0.6,
+                  width: MediaQuery
+                      .of(context)
+                      .size
+                      .width * 0.8,
+                  height: MediaQuery
+                      .of(context)
+                      .size
+                      .height * 0.6,
                   padding: const EdgeInsets.all(20),
                   child: Column(
                       mainAxisSize: MainAxisSize.max,
@@ -231,129 +201,4 @@ class _BattleScreenState extends State<BattleScreen> {
         }
     );
   }
-
-  void _showMonstersPopup(BuildContext context) {
-    PageController pageController = PageController(
-      initialPage: monsters.indexOf(selectedMonster),
-    );
-    int selectedIndex = 0;
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) { // Allows UI updates inside the dialog
-
-
-            return Dialog(
-              backgroundColor: Colors.indigo.withOpacity(0.8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: MediaQuery.of(context).size.height * 0.6,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Select a Monster',
-                      style: TextStyle(
-                        fontSize: 28,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    // Swipeable Monster Cards
-                    Expanded(
-                      child: PageView.builder(
-                        controller: pageController,
-                        itemCount: monsters.length,
-                        onPageChanged: (index) {
-                          setState(() {
-                            selectedIndex = index;
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          final monster = monsters[index];
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Monster Icon
-                              Image.asset(
-                                monster.imagePath,
-                                width: 150,
-                                height: 150,
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Monster Name
-                              Text(
-                                monster.name,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Monster Description
-                              Text(
-                                monster.description,
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white70,
-                                ),
-                              ),
-
-                              // Monster Stats
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    "Health: ${monster.health}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Attack: ${monster.attack}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.blue,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-
-                    // Select Button
-                    ElevatedButton(
-                      onPressed: () {
-                        updateSelectedMonster(monsters[selectedIndex]); // Updates main screen
-                        Navigator.of(context).pop(); // Close dialog
-                      },
-                      child: const Text("Select"),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
 }

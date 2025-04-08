@@ -51,8 +51,8 @@ class CharacterContainer extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 5, left: 20),
                 child: Row(
                   children: [
-                    Icon(Icons.bolt, color: Colors.blue),
-                    SizedBox(width: 5),
+                    const Icon(Icons.bolt, color: Colors.blue),
+                    const SizedBox(width: 5),
                     Container(width: attack.toDouble()/2, height: 8, color: Colors.blue),
                   ],
                 ),
