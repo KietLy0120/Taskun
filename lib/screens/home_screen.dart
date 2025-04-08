@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
               // CharacterContainer takes up 1/3 of the screen height
               Container(
                 height: MediaQuery.of(context).size.height / 3,  // 1/3 of the screen height
-                child: CharacterContainer(user : user),
+                child: CharacterContainer(),
               ),
 
               // Expanded DailyContainer takes up the remaining space
