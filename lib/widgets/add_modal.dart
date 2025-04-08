@@ -88,6 +88,7 @@ class AddModal {
                                   'startDate': startDate,
                                   'timeReminder': timeReminder,
                                   'repeated': repeatedValue,
+                                  'finished': 0,
                                   'createdAt': FieldValue.serverTimestamp(),
                                   'userId': user.uid, // Add the userId to associate the task with the user
 
