@@ -30,6 +30,9 @@ class CharacterContainer extends StatelessWidget {
         final character = data['character'] as String? ?? 'Warrior';
         final pet = data['pet'] as String? ?? 'Dog';
         final String name = data['name'] ?? 'Player';
+        final int coins = data['coins'] ?? 0;
+        final int health = data['health'] ?? 0;
+        final int attack = data['attack'] ?? 0;
         return Container(
           color: Colors.white.withOpacity(0.3),
           child: Column(
@@ -40,7 +43,7 @@ class CharacterContainer extends StatelessWidget {
                   children: [
                     const Icon(Icons.favorite, color: Colors.red),
                     const SizedBox(width: 5),
-                    Container(width: 80, height: 8, color: Colors.red),
+                    Container(width: health.toDouble()/2, height: 8, color: Colors.red),
                   ],
                 ),
               ),
@@ -50,7 +53,7 @@ class CharacterContainer extends StatelessWidget {
                   children: [
                     Icon(Icons.bolt, color: Colors.blue),
                     SizedBox(width: 5),
-                    Container(width: 80, height: 8, color: Colors.blue),
+                    Container(width: attack.toDouble()/2, height: 8, color: Colors.blue),
                   ],
                 ),
               ),
@@ -94,14 +97,14 @@ class CharacterContainer extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Positioned(
+                    Positioned(
                       bottom: 0,
                       right: 20,
                       child: Row(
                         children: [
                           Icon(Icons.monetization_on, color: Colors.yellow, size: 24),
                           SizedBox(width: 5),
-                          Text("599", style: TextStyle(fontSize: 20, color: Colors.white)),
+                          Text(coins.toString(), style: TextStyle(fontSize: 20, color: Colors.white)),
                         ],
                       ),
                     ),
@@ -114,5 +117,4 @@ class CharacterContainer extends StatelessWidget {
       },
     );
   }
-
 }
