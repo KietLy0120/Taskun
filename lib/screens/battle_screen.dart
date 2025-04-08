@@ -16,8 +16,8 @@ class BattleScreen extends StatefulWidget {
 class _BattleScreenState extends State<BattleScreen> {
 
   late Monster selectedMonster; //store selected monster
-  String characterType = 'Warrior'; // Default values
-  String petType = 'Dog';
+  String characterType = ''; // Default values
+  String petType = '';
 
   @override
   void initState() {

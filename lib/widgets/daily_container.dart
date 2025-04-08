@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:taskun/widgets/edit_modal.dart';
+import 'edit_modal.dart';
 
 class DailyContainer extends StatefulWidget {
   final User? user;
@@ -13,9 +13,21 @@ class DailyContainer extends StatefulWidget {
   _DailyContainerState createState() => _DailyContainerState();
 }
 
-class _DailyContainerState extends State<DailyContainer> {
+class _DailyContainerState extends State<DailyContainer> with AutomaticKeepAliveClientMixin {
+  late List<TaskItem> taskWidgets;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    taskWidgets = [];
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     String todayDate = DateFormat('EEEE, MMM d, yyyy').format(DateTime.now());
 
     return Column(
@@ -25,9 +37,9 @@ class _DailyContainerState extends State<DailyContainer> {
           child: Text(
             todayDate,
             style: TextStyle(
-              color: Colors.white, // White color for the text
-              fontSize: 24, // Larger font size
-              fontWeight: FontWeight.bold, // Optional: Make it bold
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -43,53 +55,56 @@ class _DailyContainerState extends State<DailyContainer> {
                 return const Center(child: CircularProgressIndicator());
               }
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return  Center(
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/icon-calendar.png', width: 80, height: 130),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.indigo.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Column(
-                            children: [
-                              const Text(
-                                "Nothing planned for today",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
+                return Center(
+                  child: Column(
+                    children: [
+                      Image.asset('assets/icons/icon-calendar.png', width: 80, height: 130),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.indigo.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Nothing planned for today",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
                               ),
-                              Text(
-                                "take it easy",
-                                style: TextStyle(
-                                    color: Colors.white.withOpacity(0.7),
-                                    fontSize: 14
-                                ),
+                            ),
+                            Text(
+                              "take it easy",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.7),
+                                fontSize: 14,
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    )
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 );
               }
 
-              return ListView(
-                children: snapshot.data!.docs.map((doc) {
-                  Map<String, dynamic> task = doc.data() as Map<String, dynamic>;
-                  String taskId = doc.id;
-
+              return ListView.builder(
+                key: PageStorageKey('daily-task-list'),
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  final doc = snapshot.data!.docs[index];
+                  final data = doc.data() as Map<String, dynamic>;
                   return TaskItem(
-                    taskId: taskId,
-                    title: task['title'],
-                    description: task['description'],
-                    points: task['points'] ?? 0, // Ensure default value if null
-                    user: widget.user, // Pass the user to TaskItem
+                    key: ValueKey(doc.id),
+                    taskId: doc.id,
+                    title: data['title'],
+                    description: data['description'],
+                    points: data['points'] ?? 0,
+                    user: widget.user,
+                    finished: data['finished'] ?? 0,
                   );
-                }).toList(),
+                },
               );
             },
           ),
@@ -105,6 +120,7 @@ class TaskItem extends StatefulWidget {
   final String description;
   final int points;
   final User? user;
+  final int finished;
 
   const TaskItem({
     Key? key,
@@ -113,57 +129,90 @@ class TaskItem extends StatefulWidget {
     required this.description,
     required this.points,
     required this.user,
+    required this.finished,
   }) : super(key: key);
 
   @override
   _TaskItemState createState() => _TaskItemState();
 }
 
-class _TaskItemState extends State<TaskItem> {
-  Color taskColor = Colors.grey[300]!;
-  Color upArrowColor = Colors.grey;
-  Color downArrowColor = Colors.grey;
+class _TaskItemState extends State<TaskItem> with AutomaticKeepAliveClientMixin {
+  late Color taskColor;
+  late Color upArrowColor;
+  late Color downArrowColor;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _setColors(widget.finished);
+  }
+
+  void _setColors(int finished) {
+    if (finished == 1) {
+      taskColor = Colors.red;
+      upArrowColor = Colors.red;
+      downArrowColor = Colors.grey;
+    } else if (finished == -1) {
+      taskColor = Colors.blue;
+      upArrowColor = Colors.grey;
+      downArrowColor = Colors.blue;
+    } else {
+      taskColor = Colors.grey[300]!;
+      upArrowColor = Colors.grey;
+      downArrowColor = Colors.grey;
+    }
+  }
+
+  void setColorsFromFinished(int finished) {
+    if (!mounted) return;
+    setState(() {
+      _setColors(finished);
+    });
+  }
 
   void updateTaskColor(bool isUp) async {
+    int newFinishedValue = 0;
+
     if (isUp) {
       if (upArrowColor == Colors.red) {
-        setState(() {
-          taskColor = Colors.grey[300]!;
-          upArrowColor = Colors.grey;
-          downArrowColor = Colors.grey;
-        });
+        setColorsFromFinished(0);
+        newFinishedValue = 0;
       } else {
-        setState(() {
-          taskColor = Colors.red;
-          upArrowColor = Colors.red;
-          downArrowColor = Colors.grey;
-        });
-
-        // Add points to user's coin balance
+        setColorsFromFinished(1);
+        newFinishedValue = 1;
         await _updateUserCoins(widget.points);
       }
     } else {
       if (downArrowColor == Colors.blue) {
-        setState(() {
-          taskColor = Colors.grey[300]!;
-          downArrowColor = Colors.grey;
-          upArrowColor = Colors.grey;
-        });
+        setColorsFromFinished(0);
+        newFinishedValue = 0;
       } else {
-        setState(() {
-          taskColor = Colors.blue;
-          downArrowColor = Colors.blue;
-          upArrowColor = Colors.grey;
-        });
+        setColorsFromFinished(-1);
+        newFinishedValue = -1;
+        await _updateUserCoins(-widget.points);
       }
     }
+
+    await _updateTaskFinishedStatus(newFinishedValue);
+  }
+
+  Future<void> _updateTaskFinishedStatus(int finishedValue) async {
+    await FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(widget.taskId)
+        .update({'finished': finishedValue});
   }
 
   Future<void> _updateUserCoins(int taskPoints) async {
     if (widget.user != null) {
-      DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(widget.user!.uid);
+      DocumentReference userRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(widget.user!.uid);
 
-      FirebaseFirestore.instance.runTransaction((transaction) async {
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
         DocumentSnapshot userDoc = await transaction.get(userRef);
         if (!userDoc.exists) return;
 
@@ -177,6 +226,7 @@ class _TaskItemState extends State<TaskItem> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 16),
       child: Row(
