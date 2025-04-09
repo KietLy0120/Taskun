@@ -24,7 +24,7 @@ class AssetMapper {
 
   static const Map<String, String> weaponIds = {
     'sword': '3',
-    'magic staff': '4',
+    'magic_staff': '4',
   };
 
   static const Map<String, String> potionIds = {

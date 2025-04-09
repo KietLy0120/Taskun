@@ -241,8 +241,12 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                           }
 
                           // Apply pet bonus
-                          if (petName == 'Dog') updatedAttack += 10; petBonusLabel = '+10 Dog Bonus';
-                          if (petName == 'Cat') updatedHealth += 10; petBonusLabel = '+10 Cat Bonus';
+                          if (petName == 'Dog') {
+                            updatedAttack += 10;
+                            petBonusLabel = '+10 Dog Bonus';
+                          } else if (petName == 'Cat') {
+                            updatedHealth += 10; petBonusLabel = '+10 Cat Bonus';
+                          }
 
                           setState(() {
                             selectedPet = petName;
