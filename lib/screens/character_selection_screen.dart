@@ -138,7 +138,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                             weaponName = 'Sword';
                             selectedWeapon = 'sword';
                           } else {
-                            weaponId = AssetMapper.weaponIds['magic staff']!;
+                            weaponId = AssetMapper.weaponIds['magic_staff']!;
                             baseHealth = 80;
                             baseAttack = 100;
                             weaponName = 'Magic Staff';
