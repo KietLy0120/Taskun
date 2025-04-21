@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import 'edit_modal.dart';
+import 'modals/edit_modal.dart';
 
 class DailyContainer extends StatefulWidget {
   final User? user;

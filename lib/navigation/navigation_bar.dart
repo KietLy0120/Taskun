@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:taskun/screens/character_selection_screen.dart';
 
 import '../screens/battle_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/calendar_screen.dart';
-import '../screens/inventory_screen.dart';
+import '../screens/shop_screen.dart';
 import '../screens/setting_screen.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -32,7 +31,7 @@ class CustomBottomNavBar extends StatelessWidget {
         screen = CalendarScreen();
         break;
       case 3:
-        screen = HomeScreen();
+        screen = ShopScreen();
         break;
       case 4:
         screen = HomeScreen();
@@ -95,8 +94,8 @@ class CustomBottomNavBar extends StatelessWidget {
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: _buildIcon('assets/icons/icon-bag.png'),
-          activeIcon: _buildActiveIcon('assets/icons/icon-bag.png'),
+          icon: _buildIcon('assets/icons/coin_gold_02.png'),
+          activeIcon: _buildActiveIcon('assets/icons/coin_gold_02.png'),
           label: '',
         ),
         BottomNavigationBarItem(

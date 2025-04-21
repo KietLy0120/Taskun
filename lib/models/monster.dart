@@ -21,7 +21,7 @@ class Monster {
 final List<Monster> monsters = [
   Monster(
     name: "Thief",
-    imagePath: "assets/icons/monster_icons/monster-thief.png",
+    imagePath: "assets/characters/monster_icons/monster-thief.png",
     description: "A lowly peasant thief",
     health: 150,
     attack: 25,
@@ -29,7 +29,7 @@ final List<Monster> monsters = [
   ),
   Monster(
     name: "Elf",
-    imagePath: "assets/icons/monster_icons/monster-elf.png",
+    imagePath: "assets/characters/monster_icons/monster-elf.png",
     description: "A feared protector of the forest",
     health: 300,
     attack: 50,
@@ -37,7 +37,7 @@ final List<Monster> monsters = [
   ),
   Monster(
     name: "Knight",
-    imagePath: "assets/icons/monster_icons/monster-knight.png",
+    imagePath: "assets/characters/monster_icons/monster-knight.png",
     description: "The city's bravest warrior",
     health: 450,
     attack: 75,
@@ -45,7 +45,7 @@ final List<Monster> monsters = [
   ),
   Monster(
     name: "Fire Dragon",
-    imagePath: "assets/icons/monster_icons/monster-dragon.png",
+    imagePath: "assets/characters/monster_icons/monster-dragon.png",
     description: "A fierce dragon engulfed in flames",
     health: 600,
     attack: 50,

@@ -27,8 +27,8 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
   bool isSaving = false;
 
   final Map<String, String> characters = {
-    "Warrior": "assets/characters/warrior.png",
-    "Mage": "assets/characters/mage.png",
+    "Warrior": "assets/characters/player_icons/warrior.png",
+    "Mage": "assets/characters/player_icons/mage.png",
   };
 
   final Map<String, String> pets = {
@@ -60,6 +60,20 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
 
     setState(() => isSaving = true);
 
+    //default inventory setup
+    List<String> startingWeapons = [];
+    if (selectedCharacter == 'Warrior') {
+      startingWeapons = ['sword'];
+    } else if (selectedCharacter == 'Mage') {
+      startingWeapons = ['magic_staff'];
+    }
+
+    final inventory = {
+      'weapons': startingWeapons,
+      'armor': [],
+      'potions': [],
+    };
+
     try {
       await FirebaseFirestore.instance.collection('users').doc(user!.uid).set({
         'character': selectedCharacter,
@@ -71,6 +85,7 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
         'weapon': selectedWeapon,
         'armor': selectedArmor,
         'potion': selectedPotion,
+        'inventory': inventory,
       }, SetOptions(merge: true));
 
       Navigator.pushReplacementNamed(context, '/home');

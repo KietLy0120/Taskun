@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'custom_style.dart';
+import '../custom_style.dart';
 
 class AddModal {
   static void show(BuildContext context) {

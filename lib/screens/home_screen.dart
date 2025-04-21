@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../widgets/add_button.dart';
-import '../widgets/add_modal.dart';
+import '../widgets/modals/add_modal.dart';
 import '../navigation/navigation_bar.dart';
 
 import '../widgets/daily_container.dart';

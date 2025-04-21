@@ -69,12 +69,15 @@ flutter:
 
   assets:
     - assets/backgrounds/
+    - assets/battle_backgrounds/
+    - assets/buttons/
+    - assets/characters/
+    - assets/characters/misc_character_icons/
+    - assets/characters/monster_icons/
+    - assets/characters/player_icons/
     - assets/icons/
     - assets/icons/item_icons/
-    - assets/icons/monster_icons/
-    - assets/characters/
     - assets/pets/
-    - assets/battle_backgrounds/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
