@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/monster.dart';
+import '../../models/monster.dart';
 
 void showMonstersPopup(BuildContext context, Monster selectedMonster, void Function(Monster) onSelect) {
   PageController pageController = PageController(

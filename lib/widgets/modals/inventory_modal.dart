@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../helpers/AssetMapper.dart';
+import '../../helpers/AssetMapper.dart';
 
 void showInventoryPopup(BuildContext context) async {
   final user = FirebaseAuth.instance.currentUser;
@@ -9,14 +9,28 @@ void showInventoryPopup(BuildContext context) async {
 
   final userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
   final userData = userDoc.data() ?? {};
+  final inventoryData = userData['inventory'] ?? {};
 
-  Future<List<Map<String, dynamic>>> fetchItemsByType(String type) async {
-    final query = await FirebaseFirestore.instance
-        .collection('items')
-        .where('type', isEqualTo: type)
-        .get();
+  final List<String> ownedWeapons = List<String>.from(inventoryData['weapons'] ?? []);
+  final List<String> ownedArmor = List<String>.from(inventoryData['armor'] ?? []);
+  final List<String> ownedPotions = List<String>.from(inventoryData['potions'] ?? []);
 
-    return query.docs.map((doc) => doc.data()).toList();
+  Future<List<Map<String, dynamic>>> fetchItemsByType(String type, List<String> ownedIds) async {
+    if (ownedIds.isEmpty) return [];
+
+    final futures = ownedIds.map((id) =>
+      FirebaseFirestore.instance.collection('items').doc(
+        AssetMapper.weaponIds[id] ??
+        AssetMapper.armorIds[id] ??
+        AssetMapper.potionIds[id] ??
+        '').get()
+    ).toList();
+
+    final snapshots = await Future.wait(futures);
+    return snapshots
+        .where((doc) => doc.exists)
+        .map((doc) => doc.data() as Map<String, dynamic>)
+        .toList();
   }
 
   String? weaponKey = userData['weapon'];
@@ -27,18 +41,19 @@ void showInventoryPopup(BuildContext context) async {
   String? selectedArmor = armorKey;
   String? selectedPotion = potionKey;
 
-
-
-  List<Map<String, dynamic>> weaponInventory = [];
-  List<Map<String, dynamic>> armorInventory = [];
-  List<Map<String, dynamic>> potionInventory = [];
-
-  weaponInventory = await fetchItemsByType('weapon');
-  armorInventory = await fetchItemsByType('armor');
-  potionInventory = await fetchItemsByType('potion');
+  List<Map<String, dynamic>> weaponInventory = await fetchItemsByType('weapon', ownedWeapons);
+  List<Map<String, dynamic>> armorInventory = await fetchItemsByType('armor', ownedArmor);
+  List<Map<String, dynamic>> potionInventory = await fetchItemsByType('potion', ownedPotions);
 
   Future<Map<String, dynamic>?> fetchItem(String? id) async {
-    if (id == null) return null;
+    if (id == null || id.isEmpty) return null;
+
+    String? docId = AssetMapper.weaponIds[id] ??
+                    AssetMapper.armorIds[id] ??
+                    AssetMapper.potionIds[id];
+
+    if (docId == null || docId.isEmpty) return null;
+
     final doc = await FirebaseFirestore.instance
       .collection('items')
       .doc(AssetMapper.weaponIds[id] ?? AssetMapper.armorIds[id] ?? AssetMapper.potionIds[id] ?? '')
@@ -282,7 +297,8 @@ void showInventoryPopup(BuildContext context) async {
 
                       Navigator.of(context).pop(); // close the modal
                     },
-                    child: const Text("Confirm Selection"),
+                    child:
+                    const Text("Confirm Selection"),
                   ),
                 ],
               ),
