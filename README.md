@@ -28,8 +28,9 @@ Taskun is a mobile RPG-style task management app built with Flutter. Users can c
 <br></br>
 
 ## App Demo
-![image](https://github.com/user-attachments/assets/345f62cf-b668-482d-b75e-876a2f5be383) ![image](https://github.com/user-attachments/assets/c487383e-51f9-4928-9373-67366f5c350e) ![image](https://github.com/user-attachments/assets/593908fe-d5ed-4bea-a644-5613fb6c5b12)
- ![image](https://github.com/user-attachments/assets/7717787c-75e0-4f31-801e-23eceeb8a81b)
+![image](https://github.com/user-attachments/assets/345f62cf-b668-482d-b75e-876a2f5be383) ![image](https://github.com/user-attachments/assets/c487383e-51f9-4928-9373-67366f5c350e) ![image](https://github.com/user-attachments/assets/38952aa4-af95-413c-894a-f70ea7779950)
+![image](https://github.com/user-attachments/assets/d0cff69c-0060-43d3-b6aa-113f55c75c36)
+
 
 <br></br>
 
