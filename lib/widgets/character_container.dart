@@ -104,7 +104,7 @@ class CharacterContainer extends StatelessWidget {
 
               // Character and Pet
               SizedBox(
-                height: 150,
+                height: 120,
                 child: Stack(
                   alignment: Alignment.bottomCenter,
                   children: [

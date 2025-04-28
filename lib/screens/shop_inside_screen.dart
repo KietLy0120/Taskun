@@ -31,6 +31,7 @@ class ShopInsideScreen extends StatelessWidget {
         final data = snapshot.data!;
         final character = data['character'] ?? 'Warrior';
         final pet = data['pet'] ?? 'Dog';
+        final int coins = data['coins'] ?? 0;
 
         return Stack(
           children: [
@@ -68,23 +69,52 @@ class ShopInsideScreen extends StatelessWidget {
 
             // Character (bottom-left)
             Positioned(
-              bottom: 330,
-              left: 80,
-              child: Image.asset(
-                AssetMapper.getCharacterAsset(character),
-                width: 70,
-                height: 70,
-              ),
-            ),
-
-            // Pet (next to character)
-            Positioned(
-              bottom: 330,
-              left: 20,
-              child: Image.asset(
-                AssetMapper.getPetAsset(pet),
-                width: 50,
-                height: 50,
+              left: 5,
+              bottom: 290,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Positioned(
+                        bottom: 330,
+                        left: 80,
+                        child: Image.asset(
+                          AssetMapper.getCharacterAsset(character),
+                          width: 70,
+                          height: 70,
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      // Pet (next to character)
+                      Positioned(
+                        bottom: 330,
+                        left: 20,
+                        child: Image.asset(
+                        AssetMapper.getPetAsset(pet),
+                        width: 50,
+                        height: 50,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Positioned(
+                    bottom: 0,
+                    right: 20,
+                    child: Row(
+                    children: [
+                      const Icon(Icons.monetization_on,
+                        color: Colors.yellow, size: 24),
+                        const SizedBox(width: 5),
+                        Text(
+                          coins.toString(),
+                          style: const TextStyle(
+                          fontSize: 20, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
 
