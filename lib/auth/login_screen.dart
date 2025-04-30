@@ -50,7 +50,7 @@ class LoginScreen extends StatelessWidget {
                           filled: true,
                           fillColor: Colors.white.withOpacity(0.7),
                           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          labelText: "Username",
+                          labelText: "Email",
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -114,20 +114,6 @@ class LoginScreen extends StatelessWidget {
                           }
                         },
                         child: const Text('Login'),
-                      ),
-                      const SizedBox(height: 10),
-                      const Text("Log in with other apps", style: TextStyle(color: Colors.white)),
-                      const SizedBox(height: 10),
-                      // Social Media Icons
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.facebook, color: Colors.blue, size: 40),
-                          SizedBox(width: 20),
-                          Icon(Icons.apple, color: Colors.white, size: 40),
-                          SizedBox(width: 20),
-                          Icon(Icons.dark_mode, color: Colors.black, size: 40),
-                        ],
                       ),
                     ],
                   ),

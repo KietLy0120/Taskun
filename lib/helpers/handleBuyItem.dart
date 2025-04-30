@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-Future<void> handleBuyItem(BuildContext context, String itemType, String docId, int price) async {
+Future<void> handleBuyItem(BuildContext context, String itemType, String docId, int price, {VoidCallback? onPurchaseSuccess}) async {
   final user = FirebaseAuth.instance.currentUser;
   if (user == null) return;
 
@@ -10,7 +10,28 @@ Future<void> handleBuyItem(BuildContext context, String itemType, String docId, 
   final userDoc = await userRef.get();
   final userData = userDoc.data() ?? {};
 
+  final itemSnapshot = await FirebaseFirestore.instance.collection('items').doc(docId).get();
+  final name = itemSnapshot.data()?['name'] ?? 'Unknown Item';
+
   int currentCoins = userData['coins'] ?? 0;
+  List<String> inventoryList = List<String>.from(userData['inventory']?[itemType] ?? []);
+
+  if (inventoryList.contains(name)) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Already Owned'),
+        content: const Text('You already own this item.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          )
+        ],
+      ),
+    );
+    return;
+  }
 
   if (currentCoins < price) {
     showDialog(
@@ -29,26 +50,7 @@ Future<void> handleBuyItem(BuildContext context, String itemType, String docId, 
     return;
   }
 
-  List<String> inventoryList = List<String>.from(userData['inventory']?[itemType] ?? []);
-
-  if (inventoryList.contains(docId)) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Already Owned'),
-        content: const Text('You already own this item.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
-          )
-        ],
-      ),
-    );
-    return;
-  }
-
-  inventoryList.add(docId);
+  inventoryList.add(name);
 
   await userRef.set({
     'coins': currentCoins - price,
@@ -57,11 +59,15 @@ Future<void> handleBuyItem(BuildContext context, String itemType, String docId, 
     }
   }, SetOptions(merge: true));
 
+  if (onPurchaseSuccess != null) {
+    onPurchaseSuccess();
+  }
+
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: const Text('Purchase Successful'),
-      content: const Text('You have purchased the item!'),
+      content: Text('You have purchased the $name!'),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),

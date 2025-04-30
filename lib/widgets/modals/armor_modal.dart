@@ -1,11 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../../helpers/AssetMapper.dart';
 import '../../helpers/handleBuyItem.dart';
 
 // widgets/modals/armor_modal.dart
-void showArmorPopup(BuildContext context) async {
+void showArmorPopup(BuildContext context, VoidCallback refreshUserData) async {
   final user = FirebaseAuth.instance.currentUser;
   if (user == null) return;
 
@@ -15,7 +14,7 @@ void showArmorPopup(BuildContext context) async {
       .get();
 
   final allArmor = armorSnapshot.docs
-      .map((doc) => {...doc.data() as Map<String, dynamic>, 'docId': doc.id})
+      .map((doc) => {...doc.data(), 'docId': doc.id})
       .toList();
 
   showDialog(
@@ -40,8 +39,17 @@ void showArmorPopup(BuildContext context) async {
                   const SizedBox(height: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.green[700]),
-                    onPressed: () => handleBuyItem(context, 'armor', docId, price),
-                    child: Text("Buy for $price coins"),
+                    onPressed: () => handleBuyItem(
+                        context,
+                        'armor',
+                        docId,
+                        price,
+                        onPurchaseSuccess: refreshUserData
+                    ),
+                    child: Text(
+                        "Buy for $price coins",
+                        style: const TextStyle(color: Colors.black)
+                    ),
                   )
                 ],
               ),
