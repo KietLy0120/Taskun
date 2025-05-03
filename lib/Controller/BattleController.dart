@@ -38,9 +38,11 @@ class BattleController {
   }
 
   Future<void> recordMonsterDefeat(String uid, String monsterName) async {
-    await firestore.collection('users').doc(uid).update({
-      'defeatedMonsters': {monsterName: DateTime.now()}
-    });
+    await firestore.collection('users').doc(uid).set({
+      'defeatedMonsters': {
+        monsterName: DateTime.now(),
+      }
+    }, SetOptions(merge: true));
   }
 
   Future<Map<String, dynamic>> fetchCharacterStats(String uid) async {

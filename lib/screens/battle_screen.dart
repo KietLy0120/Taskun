@@ -200,9 +200,10 @@ class _BattleScreenState extends State<BattleScreen> {
 
     if (leveledUp) {
       _showLevelUpDialog();
-      await _saveLevelUpStats();
     }
+    await _saveLevelUpStats();
   }
+
 
   void _showLevelUpDialog() {
     showDialog(
