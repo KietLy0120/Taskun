@@ -4,10 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   final AuthService _auth = AuthService();
-  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _verificationController = TextEditingController();
 
   SignupScreen({super.key});
 
@@ -46,17 +45,6 @@ class SignupScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      // Username
-                      TextField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white.withOpacity(0.7),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                          labelText: "Username",
-                        ),
-                      ),
-                      const SizedBox(height: 10),
                       // Email
                       TextField(
                         controller: _emailController,
@@ -68,6 +56,7 @@ class SignupScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
+
                       // Password
                       TextField(
                         controller: _passwordController,
@@ -80,31 +69,20 @@ class SignupScreen extends StatelessWidget {
                         obscureText: true,
                       ),
                       const SizedBox(height: 10),
-                      // Verification Code
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _verificationController,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white.withOpacity(0.7),
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                                labelText: "Verification Code",
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey,
-                            ),
-                            child: const Text("60s"),
-                          ),
-                        ],
+
+                      // Confirm Password
+                      TextField(
+                        controller: _confirmPasswordController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white.withOpacity(0.7),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          labelText: "Confirm Password",
+                        ),
+                        obscureText: true,
                       ),
                       const SizedBox(height: 10),
+
                       // Buttons
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -118,14 +96,23 @@ class SignupScreen extends StatelessWidget {
                           ),
                           ElevatedButton(
                             onPressed: () async {
+                              final password = _passwordController.text.trim();
+                              final confirmPassword = _confirmPasswordController.text.trim();
+
+                              if (password != confirmPassword) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("Passwords do not match.")),
+                                );
+                                return;
+                              }
+
                               try {
                                 User? user = await _auth.signUp(
                                   _emailController.text.trim(),
-                                  _passwordController.text.trim(),
+                                  password,
                                 );
                                 if (user != null) {
                                   Navigator.pushReplacementNamed(context, '/character-selection');
-
                                 } else {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text("Sign-up failed. Please try again.")),
@@ -140,7 +127,6 @@ class SignupScreen extends StatelessWidget {
                             style: ElevatedButton.styleFrom(backgroundColor: Colors.pinkAccent),
                             child: const Text("Sign Up"),
                           ),
-
                         ],
                       ),
                     ],
@@ -154,3 +140,4 @@ class SignupScreen extends StatelessWidget {
     );
   }
 }
+

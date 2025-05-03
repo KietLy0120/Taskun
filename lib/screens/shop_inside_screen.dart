@@ -7,9 +7,14 @@ import 'package:taskun/widgets/modals/weapons_modal.dart';
 import '../helpers/AssetMapper.dart';
 import '../helpers/ButtonAnimator.dart';
 
-class ShopInsideScreen extends StatelessWidget {
+class ShopInsideScreen extends StatefulWidget {
   const ShopInsideScreen({super.key});
 
+  @override
+  _ShopInsideScreenState createState() => _ShopInsideScreenState();
+}
+
+class _ShopInsideScreenState extends State<ShopInsideScreen> {
   Future<Map<String, dynamic>?> fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -17,6 +22,10 @@ class ShopInsideScreen extends StatelessWidget {
       return doc.data();
     }
     return null;
+  }
+
+  void refreshUserData() {
+    setState(() {});
   }
 
   @override
@@ -31,6 +40,7 @@ class ShopInsideScreen extends StatelessWidget {
         final data = snapshot.data!;
         final character = data['character'] ?? 'Warrior';
         final pet = data['pet'] ?? 'Dog';
+        final int coins = data['coins'] ?? 0;
 
         return Stack(
           children: [
@@ -62,29 +72,53 @@ class ShopInsideScreen extends StatelessWidget {
                 imagePath: 'assets/buttons/browse_button.png',
                 width: 170,
                 height: 50,
-                onTap: () => showPotionsPopup(context)
+                onTap: () => showPotionsPopup(context, refreshUserData),
               ),
             ),
 
-            // Character (bottom-left)
+            // Character and Pet (bottom-left)
             Positioned(
-              bottom: 330,
-              left: 80,
-              child: Image.asset(
-                AssetMapper.getCharacterAsset(character),
-                width: 70,
-                height: 70,
-              ),
-            ),
-
-            // Pet (next to character)
-            Positioned(
-              bottom: 330,
-              left: 20,
-              child: Image.asset(
-                AssetMapper.getPetAsset(pet),
-                width: 50,
-                height: 50,
+              left: 5,
+              bottom: 290,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        AssetMapper.getCharacterAsset(character),
+                        width: 70,
+                        height: 70,
+                      ),
+                      const SizedBox(width: 5),
+                      Image.asset(
+                        AssetMapper.getPetAsset(pet),
+                        width: 50,
+                        height: 50,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.brown.shade700,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.monetization_on, color: Colors.yellow, size: 24),
+                        const SizedBox(width: 5),
+                        Text(
+                          coins.toString(),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
 
@@ -96,7 +130,7 @@ class ShopInsideScreen extends StatelessWidget {
                 imagePath: 'assets/buttons/browse_armor_button.png',
                 width: 170,
                 height: 50,
-                onTap: () => showArmorPopup(context)
+                onTap: () => showArmorPopup(context, refreshUserData),
               ),
             ),
 
@@ -108,7 +142,7 @@ class ShopInsideScreen extends StatelessWidget {
                 imagePath: 'assets/buttons/browse_weapons_button.png',
                 width: 160,
                 height: 50,
-                onTap: () => showWeaponsPopup(context)
+                onTap: () => showWeaponsPopup(context, refreshUserData),
               ),
             ),
           ],

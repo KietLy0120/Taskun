@@ -1,0 +1,2 @@
+C:/Users/danis/StudioProjects/Taskun/android/app/.cxx/Debug/6v5z2721/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/danis/StudioProjects/Taskun/android/app/.cxx/Debug/6v5z2721/x86_64/CMakeFiles/rebuild_cache.dir
