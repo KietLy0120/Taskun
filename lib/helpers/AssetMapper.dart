@@ -20,32 +20,32 @@ class AssetMapper {
   }
 
   static const Map<String, String> armorIds = {
-    'chest plate': '1',
-    'knight helmet': '2',
+    'Chest Plate': '1',
+    'Knight Helmet': '2',
   };
 
   static const Map<String, String> weaponIds = {
-    'sword': '3',
-    'magic_staff': '4',
+    'Sword': '3',
+    'Magic Staff': '4',
   };
 
   static const Map<String, String> potionIds = {
-    'potion of vitality': '5',
-    'potion of strength': '6',
+    'Potion of Vitality': '5',
+    'Potion of Strength': '6',
   };
 
   static const Map<String, int> armorPrices = {
-    'chest plate': 500,
-    'knight helmet': 350,
+    'Chest Plate': 500,
+    'Knight Helmet': 350,
   };
 
   static const Map<String, int> weaponPrices = {
-    'sword': 100,
-    'magic_staff': 100,
+    'Sword': 100,
+    'Magic Staff': 100,
   };
 
   static const Map<String, int> potionPrices = {
-    'potion of vitality': 250,
-    'potion of strength': 250,
+    'Potion of Vitality': 250,
+    'Potion of Strength': 250,
   };
 }

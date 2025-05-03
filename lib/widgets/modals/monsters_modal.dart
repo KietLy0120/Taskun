@@ -90,7 +90,20 @@ void showMonstersPopup(BuildContext context, Monster selectedMonster, void Funct
                                                 Expanded(
                                                   child: Container(
                                                     height: 8,
-                                                    color: Colors.red,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red.shade200,
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                    child: FractionallySizedBox(
+                                                      alignment: Alignment.centerLeft,
+                                                      widthFactor: monster.health / 600, // scale based on expected max health
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -116,7 +129,20 @@ void showMonstersPopup(BuildContext context, Monster selectedMonster, void Funct
                                                 Expanded(
                                                   child: Container(
                                                     height: 8,
-                                                    color: Colors.blue,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue.shade200,
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                    child: FractionallySizedBox(
+                                                      alignment: Alignment.centerLeft,
+                                                      widthFactor: monster.attack / 100, // scale based on expected max attack
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.blue,
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ],

@@ -15,23 +15,36 @@ void showInventoryPopup(BuildContext context) async {
   final List<String> ownedArmor = List<String>.from(inventoryData['armor'] ?? []);
   final List<String> ownedPotions = List<String>.from(inventoryData['potions'] ?? []);
 
-  Future<List<Map<String, dynamic>>> fetchItemsByType(String type, List<String> ownedIds) async {
-    if (ownedIds.isEmpty) return [];
+  Future<List<Map<String, dynamic>>> fetchItemsByType(String type, List<String> ownedNames) async {
+    if (ownedNames.isEmpty) return [];
 
-    final futures = ownedIds.map((id) =>
-      FirebaseFirestore.instance.collection('items').doc(
-        AssetMapper.weaponIds[id] ??
-        AssetMapper.armorIds[id] ??
-        AssetMapper.potionIds[id] ??
-        '').get()
-    ).toList();
+    final futures = ownedNames.map((name) {
+      String? docId;
+
+      if (type == 'weapon') {
+        docId = AssetMapper.weaponIds[name];
+      } else if (type == 'armor') {
+        docId = AssetMapper.armorIds[name];
+      } else if (type == 'potion') {
+        docId = AssetMapper.potionIds[name];
+      }
+
+      if (docId == null || docId.isEmpty) {
+        return Future.value(null); // skip invalid ones
+      }
+
+      return FirebaseFirestore.instance.collection('items').doc(docId).get();
+    }).toList();
 
     final snapshots = await Future.wait(futures);
+
     return snapshots
-        .where((doc) => doc.exists)
-        .map((doc) => doc.data() as Map<String, dynamic>)
+        .where((doc) => doc != null && doc.exists)
+        .map((doc) => doc!.data() as Map<String, dynamic>)
         .toList();
   }
+
+
 
   String? weaponKey = userData['weapon'];
   String? armorKey = userData['armor'];
@@ -44,6 +57,7 @@ void showInventoryPopup(BuildContext context) async {
   List<Map<String, dynamic>> weaponInventory = await fetchItemsByType('weapon', ownedWeapons);
   List<Map<String, dynamic>> armorInventory = await fetchItemsByType('armor', ownedArmor);
   List<Map<String, dynamic>> potionInventory = await fetchItemsByType('potion', ownedPotions);
+
 
   Future<Map<String, dynamic>?> fetchItem(String? id) async {
     if (id == null || id.isEmpty) return null;
@@ -77,6 +91,12 @@ void showInventoryPopup(BuildContext context) async {
 
           //Helper method for building 'Equipped' columns
           Widget buildEquippedColumn(Map<String, dynamic>? itemData, String label) {
+            final String itemName = itemData?['name'] ?? 'None';
+            final String description = itemData?['description'] ?? '';
+            final String imagePath = itemData?['imagePath'] ?? '';
+            final int healthBonus = itemData?['healthBonus'] ?? 0;
+            final int attackBonus = itemData?['attackBonus'] ?? 0;
+
             return Container(
               decoration: BoxDecoration(
                 color: Colors.brown.shade100,
@@ -85,24 +105,21 @@ void showInventoryPopup(BuildContext context) async {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(label,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                      )),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   const SizedBox(height: 8),
 
                   // Item Icon or Cancel
-                  itemData != null && itemData['imagePath'] != null
-                      ? Image.asset(
-                    itemData['imagePath'],
-                    width: 80,
-                    height: 80,
-                  )
+                  imagePath.isNotEmpty
+                      ? Image.asset(imagePath, width: 80, height: 80)
                       : const Icon(Icons.cancel, color: Colors.white, size: 50),
                   const SizedBox(height: 6),
-
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -113,43 +130,41 @@ void showInventoryPopup(BuildContext context) async {
                       ),
                       child: Column(
                         children: [
-                          //name
                           Text(
-                            itemData?['name'] ?? 'None',
+                            itemName,
                             style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
                             ),
                           ),
-
-                          // Description
                           Text(
-                            itemData?['description'] ?? '',
+                            description,
                             style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14),
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 4),
 
-                          // Health Bonus
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'HP +${itemData?['healthBonus'] ?? 0}',
+                                'HP +$healthBonus',
                                 style: const TextStyle(
-                                    color: Colors.redAccent,
-                                    fontSize: 16),
+                                  color: Colors.redAccent,
+                                  fontSize: 16,
+                                ),
                               ),
                               const SizedBox(width: 10),
-                              // Attack Bonus
                               Text(
-                                'ATK +${itemData?['attackBonus'] ?? 0}',
+                                'ATK +$attackBonus',
                                 style: const TextStyle(
-                                    color: Colors.blueAccent,
-                                    fontSize: 16),
+                                  color: Colors.blueAccent,
+                                  fontSize: 16,
+                                ),
                               ),
                             ],
                           ),
@@ -157,10 +172,25 @@ void showInventoryPopup(BuildContext context) async {
                       ),
                     ),
                   ),
+                  const Spacer(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_back_ios_rounded, color: Colors.brown, size: 25),
+                        Spacer(),
+                        Text("Swipe", style: TextStyle(color: Colors.brown, fontSize: 12)),
+                        Spacer(),
+                        Icon(Icons.arrow_forward_ios_rounded, color: Colors.brown, size: 25),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             );
           }
+
 
           //Helper method for building inventory rows
           Widget buildInventoryRow(
@@ -184,7 +214,7 @@ void showInventoryPopup(BuildContext context) async {
                 itemCount: inventory.length,
                 itemBuilder: (context, index) {
                   final item = inventory[index];
-                  final itemId = item['name'].toString().toLowerCase();
+                  final itemId = item['name'].toString();
 
                   final isSelected = selectedId == itemId;
 
@@ -262,7 +292,7 @@ void showInventoryPopup(BuildContext context) async {
                   const SizedBox(height: 20),
 
                   SizedBox(
-                    height: 220,
+                    height: 265,
                     child: PageView(
                       children: [
                         buildEquippedColumn(equippedWeaponData, "Weapon"),
