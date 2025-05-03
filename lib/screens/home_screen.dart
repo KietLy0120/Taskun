@@ -30,10 +30,8 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Background image
           Positioned.fill(
-            child: Image.asset(
-                "assets/backgrounds/home-bg.png",
-                fit: BoxFit.cover
-            ),
+            child: Image.asset("assets/backgrounds/home-bg.png",
+                fit: BoxFit.cover),
           ),
 
           // Main content
@@ -41,8 +39,9 @@ class HomeScreen extends StatelessWidget {
             children: [
               // CharacterContainer takes up 1/3 of the screen height
               Container(
-                height: MediaQuery.of(context).size.height / 3,  // 1/3 of the screen height
-                child: CharacterContainer(user:user),
+                height: MediaQuery.of(context).size.height /
+                    3, // 1/3 of the screen height
+                child: CharacterContainer(user: user),
               ),
 
               // Expanded DailyContainer takes up the remaining space

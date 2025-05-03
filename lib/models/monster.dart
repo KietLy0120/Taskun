@@ -1,5 +1,6 @@
 class Monster {
 
+  final String id;
   final String name;
   final String imagePath;
   final String description;
@@ -8,6 +9,7 @@ class Monster {
   final String backgroundPath;
 
   Monster({
+    required this.id,
     required this.name,
     required this.imagePath,
     required this.description,
@@ -20,6 +22,7 @@ class Monster {
 //Global List of Monsters
 final List<Monster> monsters = [
   Monster(
+    id: 'thief',
     name: "Thief",
     imagePath: "assets/characters/monster_icons/monster-thief.png",
     description: "A lowly peasant thief",
@@ -28,6 +31,7 @@ final List<Monster> monsters = [
     backgroundPath: "assets/battle_backgrounds/battle_background0.png",
   ),
   Monster(
+    id: 'elf',
     name: "Elf",
     imagePath: "assets/characters/monster_icons/monster-elf.png",
     description: "A feared protector of the forest",
@@ -36,6 +40,7 @@ final List<Monster> monsters = [
     backgroundPath: "assets/battle_backgrounds/battle_background1.png",
   ),
   Monster(
+    id: 'knight',
     name: "Knight",
     imagePath: "assets/characters/monster_icons/monster-knight.png",
     description: "The city's bravest warrior",
@@ -44,6 +49,7 @@ final List<Monster> monsters = [
     backgroundPath: "assets/battle_backgrounds/battle_background2.png",
   ),
   Monster(
+    id: 'fire_dragon',
     name: "Fire Dragon",
     imagePath: "assets/characters/monster_icons/monster-dragon.png",
     description: "A fierce dragon engulfed in flames",

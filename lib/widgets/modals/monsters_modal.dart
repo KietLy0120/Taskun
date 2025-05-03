@@ -6,8 +6,6 @@ void showMonstersPopup(BuildContext context, Monster selectedMonster, void Funct
     initialPage: monsters.indexOf(selectedMonster),
   );
   int selectedIndex = 0;
-  int monsterHealth = selectedMonster.health;
-  int monsterAttack = selectedMonster.attack;
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -82,77 +80,83 @@ void showMonstersPopup(BuildContext context, Monster selectedMonster, void Funct
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.favorite, color: Colors.red),
-                                              const SizedBox(width: 5),
-                                              Container(
-                                                width: 50, // fixed max width
-                                                height: 8,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.red.shade200,
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: FractionallySizedBox(
-                                                  alignment: Alignment.centerLeft,
-                                                  widthFactor: (monster.health) / 600, // assume 600 is max for scaling
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.favorite, color: Colors.red),
+                                                const SizedBox(width: 5),
+                                                Expanded(
                                                   child: Container(
+                                                    height: 8,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.red,
+                                                      color: Colors.red.shade200,
                                                       borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                    child: FractionallySizedBox(
+                                                      alignment: Alignment.centerLeft,
+                                                      widthFactor: monster.health / 600, // scale based on expected max health
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-
-                                          Text(
-                                            "Health: ${monster.health}",
-                                            style: const TextStyle(
+                                              ],
+                                            ),
+                                            Text(
+                                              "Health: ${monster.health}",
+                                              style: const TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.red,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.bolt, color: Colors.blue),
-                                              const SizedBox(width: 5),
-                                              Container(
-                                                width: 50, // same max width as health bar
-                                                height: 8,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue.shade200,
-                                                  borderRadius: BorderRadius.circular(4),
-                                                ),
-                                                child: FractionallySizedBox(
-                                                  alignment: Alignment.centerLeft,
-                                                  widthFactor: monster.attack / 100, // scale based on expected max
+                                      Expanded(
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.bolt, color: Colors.blue),
+                                                const SizedBox(width: 5),
+                                                Expanded(
                                                   child: Container(
+                                                    height: 8,
                                                     decoration: BoxDecoration(
-                                                      color: Colors.blue,
+                                                      color: Colors.blue.shade200,
                                                       borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                    child: FractionallySizedBox(
+                                                      alignment: Alignment.centerLeft,
+                                                      widthFactor: monster.attack / 100, // scale based on expected max attack
+                                                      child: Container(
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.blue,
+                                                          borderRadius: BorderRadius.circular(4),
+                                                        ),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-
-                                          Text(
-                                            "Attack: ${monster.attack}",
-                                            style: const TextStyle(
+                                              ],
+                                            ),
+                                            Text(
+                                              "Attack: ${monster.attack}",
+                                              style: const TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.blue,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
