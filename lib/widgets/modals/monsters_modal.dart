@@ -88,9 +88,27 @@ void showMonstersPopup(BuildContext context, Monster selectedMonster, void Funct
                                             children: [
                                               const Icon(Icons.favorite, color: Colors.red),
                                               const SizedBox(width: 5),
-                                              Container(width: monsterHealth.toDouble()/2, height: 8, color: Colors.red),
+                                              Container(
+                                                width: 50, // fixed max width
+                                                height: 8,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red.shade200,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: FractionallySizedBox(
+                                                  alignment: Alignment.centerLeft,
+                                                  widthFactor: (monster.health) / 600, // assume 600 is max for scaling
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.red,
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ],
                                           ),
+
                                           Text(
                                             "Health: ${monster.health}",
                                             style: const TextStyle(
@@ -106,9 +124,27 @@ void showMonstersPopup(BuildContext context, Monster selectedMonster, void Funct
                                             children: [
                                               const Icon(Icons.bolt, color: Colors.blue),
                                               const SizedBox(width: 5),
-                                              Container(width: monsterAttack.toDouble()/2, height: 8, color: Colors.blue),
+                                              Container(
+                                                width: 50, // same max width as health bar
+                                                height: 8,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue.shade200,
+                                                  borderRadius: BorderRadius.circular(4),
+                                                ),
+                                                child: FractionallySizedBox(
+                                                  alignment: Alignment.centerLeft,
+                                                  widthFactor: monster.attack / 100, // scale based on expected max
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.blue,
+                                                      borderRadius: BorderRadius.circular(4),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ],
                                           ),
+
                                           Text(
                                             "Attack: ${monster.attack}",
                                             style: const TextStyle(

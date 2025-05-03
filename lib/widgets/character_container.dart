@@ -50,106 +50,134 @@ class CharacterContainer extends StatelessWidget {
         final int health = data['health'] ?? 0;
         final int attack = data['attack'] ?? 0;
 
-        return Container(
-          color: Colors.white.withOpacity(0.3),
-          child: Column(
-            children: [
-              // Health Bar
-              Padding(
-                padding: const EdgeInsets.only(top: 50, left: 20),
-                child: Row(
+        return SafeArea(
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    const Icon(Icons.favorite, color: Colors.red),
-                    const SizedBox(width: 5),
                     Container(
-                      width: health.toDouble() / 2,
-                      height: 8,
-                      color: Colors.red,
-                    ),
-                  ],
-                ),
-              ),
-
-              // Attack Bar
-              Padding(
-                padding: const EdgeInsets.only(top: 5, left: 20),
-                child: Row(
-                  children: [
-                    const Icon(Icons.bolt, color: Colors.blue),
-                    const SizedBox(width: 5),
-                    Container(
-                      width: attack.toDouble() / 2,
-                      height: 8,
-                      color: Colors.blue,
-                    ),
-                  ],
-                ),
-              ),
-
-              // Player Name
-              Padding(
-                padding: const EdgeInsets.only(top: 5, left: 20),
-                child: Row(
-                  children: [
-                    const Icon(Icons.stars_sharp, color: Colors.black),
-                    const SizedBox(width: 5),
-                    Text(
-                      name,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Character and Pet
-              SizedBox(
-                height: 150,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    // Character and Pet
-                    Positioned(
-                      bottom: 10,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.indigo.shade500,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
                         children: [
-                          Image.asset(
-                            AssetMapper.getPetAsset(pet),
-                            width: 60,
-                            height: 60,
+
+                          //Health Bar
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Icon(Icons.favorite, color: Colors.red),
+                              const SizedBox(width: 5),
+                              Container(
+                                width: health.toDouble() / 2,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 10),
-                          Image.asset(
-                            AssetMapper.getCharacterAsset(character),
-                            width: 90,
-                            height: 90,
+
+                          //Attack Bar
+                          Row(
+                            children: [
+                              const Icon(Icons.bolt, color: Colors.blue),
+                              const SizedBox(width: 5),
+                              Container(
+                                width: attack.toDouble() / 2,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          //Player Name
+                          Row(
+                            children: [
+                              const Icon(Icons.stars_sharp, color: Colors.black),
+                              const SizedBox(width: 5),
+                              Text(
+                                name,
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
-
-                    // Coins
-                    Positioned(
-                      bottom: 0,
-                      right: 20,
-                      child: Row(
-                        children: [
-                          const Icon(Icons.monetization_on,
-                              color: Colors.yellow, size: 24),
-                          const SizedBox(width: 5),
-                          Text(
-                            coins.toString(),
-                            style: const TextStyle(
-                                fontSize: 20, color: Colors.white),
-                          ),
-                        ],
-                      ),
-                    ),
+                    )
                   ],
                 ),
-              ),
-            ],
+
+                // Character and Pet
+                Expanded(
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                AssetMapper.getPetAsset(pet),
+                                width: 60,
+                                height: 60,
+                              ),
+                              const SizedBox(width: 10),
+                              Image.asset(
+                                AssetMapper.getCharacterAsset(character),
+                                width: 90,
+                                height: 90,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10, right: 10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.indigo.shade500,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.monetization_on, color: Colors.yellow, size: 24),
+                                const SizedBox(width: 5),
+                                Text(
+                                  coins.toString(),
+                                  style: const TextStyle(fontSize: 20, color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

@@ -63,9 +63,9 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
     //default inventory setup
     List<String> startingWeapons = [];
     if (selectedCharacter == 'Warrior') {
-      startingWeapons = ['sword'];
+      startingWeapons = ['Sword'];
     } else if (selectedCharacter == 'Mage') {
-      startingWeapons = ['magic_staff'];
+      startingWeapons = ['Magic Staff'];
     }
 
     final inventory = {
@@ -147,17 +147,17 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
                           String weaponName;
 
                           if (characterName == 'Warrior') {
-                            weaponId = AssetMapper.weaponIds['sword']!;
+                            weaponId = AssetMapper.weaponIds['Sword']!;
                             baseHealth = 100;
                             baseAttack = 80;
                             weaponName = 'Sword';
-                            selectedWeapon = 'sword';
+                            selectedWeapon = 'Sword';
                           } else {
-                            weaponId = AssetMapper.weaponIds['magic_staff']!;
+                            weaponId = AssetMapper.weaponIds['Magic Staff']!;
                             baseHealth = 80;
                             baseAttack = 100;
                             weaponName = 'Magic Staff';
-                            selectedWeapon = 'magic_staff';
+                            selectedWeapon = 'Magic Staff';
                           }
 
                           final weaponDoc = await FirebaseFirestore.instance
