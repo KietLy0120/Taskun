@@ -45,9 +45,14 @@ class AuthService {
             'email': email,
             'character': '',
             'pet': '',
-            'coins': 0,
+            'level': 1,
+            'experience': 0,
+            'health': 100,
+            'attack': 10,
+            'coins': 0, // optional starting coins
             'createdAt': FieldValue.serverTimestamp(),
           });
+
           print("✔️ User registered and stored in Firestore!");
         } else {
           print("⚠️ User document already exists.");
