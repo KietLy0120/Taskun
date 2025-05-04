@@ -34,7 +34,7 @@ class CustomBottomNavBar extends StatelessWidget {
         screen = ShopScreen();
         break;
       case 4:
-        screen = HomeScreen();
+        screen = SettingScreen();
         break;
       default:
         return; // Do nothing if index is out of range

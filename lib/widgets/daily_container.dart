@@ -15,6 +15,7 @@ class DailyContainer extends StatefulWidget {
 
 class _DailyContainerState extends State<DailyContainer> with AutomaticKeepAliveClientMixin {
   late List<TaskItem> taskWidgets;
+  DateTime _selectedDate = DateTime.now();
 
   @override
   bool get wantKeepAlive => true;
@@ -25,22 +26,47 @@ class _DailyContainerState extends State<DailyContainer> with AutomaticKeepAlive
     taskWidgets = [];
   }
 
+  void _goToPreviousDay() {
+    setState(() {
+      _selectedDate = _selectedDate.subtract(Duration(days: 1));
+    });
+  }
+
+  void _goToNextDay() {
+    setState(() {
+      _selectedDate = _selectedDate.add(Duration(days: 1));
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    String todayDate = DateFormat('EEEE, MMM d, yyyy').format(DateTime.now());
+    String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(_selectedDate);
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.all(12.0),
-          child: Text(
-            todayDate,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: Icon(Icons.chevron_left, color: Colors.white),
+                onPressed: _goToPreviousDay,
+              ),
+              Text(
+                formattedDate,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.chevron_right, color: Colors.white),
+                onPressed: _goToNextDay,
+              ),
+            ],
           ),
         ),
         Flexible(
@@ -48,52 +74,38 @@ class _DailyContainerState extends State<DailyContainer> with AutomaticKeepAlive
             stream: FirebaseFirestore.instance
                 .collection('tasks')
                 .where('userId', isEqualTo: widget.user?.uid)
-                .orderBy('createdAt', descending: true)
                 .snapshots(),
             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
+
               if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                return Center(
-                  child: Column(
-                    children: [
-                      Image.asset('assets/icons/icon-calendar.png', width: 80, height: 130),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.indigo.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              "Nothing planned for today",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                              ),
-                            ),
-                            Text(
-                              "take it easy",
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.7),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                );
+                return _buildEmptyState();
+              }
+
+              List<QueryDocumentSnapshot> filteredDocs = snapshot.data!.docs.where((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+
+                if (data['startDate'] == null) return false;
+
+                try {
+                  final DateTime startDate = DateTime.parse(data['startDate']);
+                  return !startDate.isAfter(_selectedDate); // equivalent to startDate <= selectedDate
+                } catch (e) {
+                  return false; // Invalid date format
+                }
+              }).toList();
+
+              if (filteredDocs.isEmpty) {
+                return _buildEmptyState();
               }
 
               return ListView.builder(
                 key: PageStorageKey('daily-task-list'),
-                itemCount: snapshot.data!.docs.length,
+                itemCount: filteredDocs.length,
                 itemBuilder: (context, index) {
-                  final doc = snapshot.data!.docs[index];
+                  final doc = filteredDocs[index];
                   final data = doc.data() as Map<String, dynamic>;
                   return TaskItem(
                     key: ValueKey(doc.id),
@@ -112,7 +124,43 @@ class _DailyContainerState extends State<DailyContainer> with AutomaticKeepAlive
       ],
     );
   }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        children: [
+          Image.asset('assets/icons/icon-calendar.png', width: 80, height: 130),
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.indigo.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Column(
+              children: [
+                const Text(
+                  "Nothing planned for this day",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  "take it easy",
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.7),
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
+
 
 class TaskItem extends StatefulWidget {
   final String taskId;
