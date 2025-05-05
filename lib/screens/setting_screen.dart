@@ -40,7 +40,7 @@ class SettingScreen extends StatelessWidget {
               // CharacterContainer takes up 1/3 of the screen height
 
               Container(
-                height: MediaQuery.of(context).size.height / 2.5,  // 1/3 of the screen height
+                height: MediaQuery.of(context).size.height / 2.3,  // 1/3 of the screen height
                 child: CharSettingContainer(user: user),
               ),
               Expanded(

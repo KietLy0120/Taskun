@@ -54,6 +54,8 @@ class CharSettingContainer extends StatelessWidget {
         final Timestamp timestamp = data['createdAt'];
         final DateTime dateTime = timestamp.toDate();
         final String formattedDate = DateFormat('MMMM d, y').format(dateTime);
+        final int level = (data['level'] as num?)?.toInt() ?? 1;
+        final int experience = (data['experience'] as num?)?.toInt() ?? 0;
 
         return SafeArea(
           child: Container(
@@ -180,7 +182,35 @@ class CharSettingContainer extends StatelessWidget {
                           children: [
                             Row(
                               children: [
-                                const Icon(Icons.stars_sharp, color: Colors.black),
+                                const Icon(Icons.explicit_outlined, color: Colors.green),
+                                const SizedBox(width: 5),
+                                Text(
+                                  '$experience/${_getNextLevelXP(level)}',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              'Level: $level',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.stars_sharp, color: Colors.white),
                                 const SizedBox(width: 5),
                                 Text(
                                   name,
@@ -198,11 +228,11 @@ class CharSettingContainer extends StatelessWidget {
                                 const SizedBox(width: 5),
                                 Text(
                                   coins.toString(),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ],
                             ),
@@ -235,5 +265,9 @@ class CharSettingContainer extends StatelessWidget {
           );
       },
     );
+  }
+  int _getNextLevelXP(int level) {
+    const thresholds = {1: 50, 2: 100, 3: 200, 4: 350};
+    return thresholds[level] ?? 500;
   }
 }

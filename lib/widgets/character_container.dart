@@ -144,6 +144,7 @@ class CharacterContainer extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.red,
                                     ),
                                   ),
                                   if (healthBonus > 0)
@@ -185,6 +186,7 @@ class CharacterContainer extends StatelessWidget {
                                     style: const TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.blue,
                                     ),
                                   ),
                                   if (attackBonus > 0)
@@ -217,13 +219,14 @@ class CharacterContainer extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const Icon(Icons.stars_sharp, color: Colors.black),
+                              const Icon(Icons.stars_sharp, color: Colors.white),
                               const SizedBox(width: 5),
                               Text(
                                 name,
                                 style: const TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
@@ -241,15 +244,13 @@ class CharacterContainer extends StatelessWidget {
                     children: [
                       Align(
                         alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
                           child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Image.asset(
                                 AssetMapper.getPetAsset(pet),
-                                width: 60,
-                                height: 60,
+                                width: 50,
+                                height: 50,
                               ),
                               const SizedBox(width: 10),
                               Image.asset(
@@ -258,8 +259,7 @@ class CharacterContainer extends StatelessWidget {
                                 height: 90,
                               ),
                             ],
-                          ),
-                        ),
+                          )
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
