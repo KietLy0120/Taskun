@@ -79,12 +79,13 @@ class _CharacterSelectionScreenState extends State<CharacterSelectionScreen> {
         'character': selectedCharacter,
         'pet': selectedPet,
         'name': _nameController.text.trim(),
+        'baseHealth': baseHealth,
+        'baseAttack': baseAttack,
         'health': health,
         'attack': attack,
         'coins': 0,
-        'weapon': selectedWeapon,
-        'armor': selectedArmor,
-        'potion': selectedPotion,
+        'equipmentHealthBonus': 0,
+        'equipmentAttackBonus': 0,
         'inventory': inventory,
       }, SetOptions(merge: true));
 

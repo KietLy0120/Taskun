@@ -4,25 +4,33 @@ import '../models/battle_log.dart';
 class BattleLogWidget extends StatelessWidget {
   final List<BattleLog> logs;
   final ScrollController scrollController;
-  final bool showTimestamp;  // New optional parameter
+  final bool showTimestamp;
+  final int maxVisibleLines;
 
   const BattleLogWidget({
     super.key,
     required this.logs,
     required this.scrollController,
-    this.showTimestamp = false,  // Default to false
+    this.showTimestamp = false,
+    this.maxVisibleLines = 5,
   });
 
   @override
   Widget build(BuildContext context) {
+    final lineHeight = 24.0;
+    final headerHeight = 50.0;
+    final paddingHeight = 16.0; // Vertical padding
+
     return Positioned(
       top: 60,
       left: 16,
       right: 16,
-      height: 140,  // Slightly increased height
       child: Container(
+        constraints: BoxConstraints(
+          maxHeight: headerHeight + (maxVisibleLines * lineHeight) + paddingHeight,
+        ),
         decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.75),  // More opaque
+          color: Colors.black.withOpacity(0.75),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.white.withOpacity(0.4), width: 1),
           boxShadow: [
@@ -35,83 +43,92 @@ class BattleLogWidget extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header with close button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'BATTLE LOG',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
+            // Header section
+            SizedBox(
+              height: headerHeight - 20, // Account for padding
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'BATTLE LOG',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                    ),
                   ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close, size: 18, color: Colors.white70),
-                  onPressed: () {},  // Add your close functionality
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                ),
-              ],
+                  IconButton(
+                    icon: Icon(Icons.close, size: 18, color: Colors.white70),
+                    onPressed: () {},
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 6),
+
             // Log entries
-            Expanded(
-              child: ListView.builder(
+            SizedBox(
+              height: maxVisibleLines * lineHeight,
+              child: SingleChildScrollView(
+                physics: logs.length > maxVisibleLines
+                    ? const ClampingScrollPhysics()
+                    : const NeverScrollableScrollPhysics(),
                 controller: scrollController,
-                physics: const BouncingScrollPhysics(),
-                itemCount: logs.length,
-                itemBuilder: (context, index) {
-                  final log = logs[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Bullet point
-                        Padding(
-                          padding: const EdgeInsets.only(top: 2, right: 4),
-                          child: Text(
-                            '•',
-                            style: TextStyle(
-                              color: log.color.withOpacity(0.8),
-                              fontSize: 16,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: logs.map((log) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2, right: 4),
+                            child: Text(
+                              '•',
+                              style: TextStyle(
+                                color: log.color.withOpacity(0.8),
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                        // Message with optional timestamp
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                if (showTimestamp)
+                          Expanded(
+                            child: RichText(
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              text: TextSpan(
+                                children: [
+                                  if (showTimestamp)
+                                    TextSpan(
+                                      text: '[${_formatTime(log.timestamp)}] ',
+                                      style: TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 12,
+                                      ),
+                                    ),
                                   TextSpan(
-                                    text: '[${_formatTime(log.timestamp)}] ',
+                                    text: log.message,
                                     style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 12,
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                TextSpan(
-                                  text: log.message,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,  // Slightly smaller
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ],

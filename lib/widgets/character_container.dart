@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../helpers/AssetMapper.dart';
 
 class CharacterContainer extends StatelessWidget {
@@ -46,9 +45,22 @@ class CharacterContainer extends StatelessWidget {
         final character = data['character'] as String? ?? 'Warrior';
         final pet = data['pet'] as String? ?? 'Dog';
         final String name = data['name'] ?? 'Player';
-        final int coins = data['coins'] ?? 0;
-        final int health = data['health'] ?? 0;
-        final int attack = data['attack'] ?? 0;
+        final int coins = (data['coins'] as num?)?.toInt() ?? 0;
+
+        // Base stats
+        final int baseHealth = (data['health'] as num?)?.toInt() ?? 100;
+        final int baseAttack = (data['attack'] as num?)?.toInt() ?? 0;
+
+        // Equipment bonuses
+        final int healthBonus = (data['equipmentHealthBonus'] as num?)?.toInt() ?? 0;
+        final int attackBonus = (data['equipmentAttackBonus'] as num?)?.toInt() ?? 0;
+
+        // Total stats
+        final int totalHealth = baseHealth + healthBonus;
+        final int totalAttack = baseAttack + attackBonus;
+
+        final int level = (data['level'] as num?)?.toInt() ?? 1;
+        final int experience = (data['experience'] as num?)?.toInt() ?? 0;
 
         return SafeArea(
           child: Container(
@@ -57,9 +69,55 @@ class CharacterContainer extends StatelessWidget {
               color: Colors.white.withOpacity(0.3),
               borderRadius: BorderRadius.circular(8),
             ),
-
             child: Column(
               children: [
+                // XP Progress Bar and Level
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800]?.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Level $level',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '$experience/${_getNextLevelXP(level)} XP',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      SizedBox(
+                        height: 8,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(4),
+                          child: LinearProgressIndicator(
+                            value: experience / _getNextLevelXP(level),
+                            backgroundColor: Colors.grey[600],
+                            color: Colors.yellow,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Stats Container (blue)
                 Row(
                   children: [
                     Container(
@@ -69,17 +127,39 @@ class CharacterContainer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, // Align all children to the left
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
-                          //Health Bar
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                          // Health Bar with bonus indicator
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.favorite, color: Colors.red),
-                              const SizedBox(width: 5),
+                              Row(
+                                children: [
+                                  const Icon(Icons.favorite, color: Colors.red, size: 16),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '$totalHealth',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (healthBonus > 0)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Text(
+                                        '(+$healthBonus)',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
                               Container(
-                                width: health.toDouble() / 2,
+                                width: totalHealth.toDouble() / 2,
                                 height: 8,
                                 decoration: BoxDecoration(
                                   color: Colors.red,
@@ -88,15 +168,39 @@ class CharacterContainer extends StatelessWidget {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 6),
 
-                          //Attack Bar
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                          // Attack Bar with bonus indicator
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(Icons.bolt, color: Colors.blue),
-                              const SizedBox(width: 5),
+                              Row(
+                                children: [
+                                  const Icon(Icons.bolt, color: Colors.blue, size: 16),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    '$totalAttack',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  if (attackBonus > 0)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 4),
+                                      child: Text(
+                                        '(+$attackBonus)',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 2),
                               Container(
-                                width: attack.toDouble() / 2,
+                                width: totalAttack.toDouble() / 2,
                                 height: 8,
                                 decoration: BoxDecoration(
                                   color: Colors.blue,
@@ -105,8 +209,9 @@ class CharacterContainer extends StatelessWidget {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 6),
 
-                          //Player Name
+                          // Player Name
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -187,5 +292,10 @@ class CharacterContainer extends StatelessWidget {
         );
       },
     );
+  }
+
+  int _getNextLevelXP(int level) {
+    const thresholds = {1: 50, 2: 100, 3: 200, 4: 350};
+    return thresholds[level] ?? 500;
   }
 }

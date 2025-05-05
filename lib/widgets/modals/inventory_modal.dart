@@ -319,16 +319,44 @@ void showInventoryPopup(BuildContext context) async {
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () async {
+                      // Calculate total bonuses
+                      int healthBonus = 0;
+                      int attackBonus = 0;
+
+                      if (equippedWeaponData != null) {
+                        attackBonus += (equippedWeaponData!['attackBonus'] as num).toInt();
+                      }
+                      if (equippedArmorData != null) {
+                        healthBonus += (equippedArmorData!['healthBonus'] as num).toInt();
+                      }
+                      if (equippedPotionData != null) {
+                        healthBonus += (equippedPotionData!['healthBonus'] as num).toInt();
+                        attackBonus += (equippedPotionData!['attackBonus'] as num).toInt();
+                      }
+
+                      // Get base stats without equipment
+                      final userDoc = await FirebaseFirestore.instance
+                          .collection('users')
+                          .doc(user.uid)
+                          .get();
+
+                      final baseHealth = (userDoc.data()?['baseHealth'] as num?)?.toInt() ?? 100;
+                      final baseAttack = (userDoc.data()?['baseAttack'] as num?)?.toInt() ?? 10;
+
+                      // Update user document
                       await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
                         'weapon': selectedWeapon,
                         'armor': selectedArmor,
                         'potion': selectedPotion,
+                        'equipmentHealthBonus': healthBonus,
+                        'equipmentAttackBonus': attackBonus,
+                        'health': baseHealth + healthBonus,  // Total health
+                        'attack': baseAttack + attackBonus,  // Total attack
                       }, SetOptions(merge: true));
 
-                      Navigator.of(context).pop(); // close the modal
+                      Navigator.of(context).pop();
                     },
-                    child:
-                    const Text("Confirm Selection"),
+                    child: const Text("Confirm Selection"),
                   ),
                 ],
               ),
