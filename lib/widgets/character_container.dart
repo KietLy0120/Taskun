@@ -66,7 +66,9 @@ class CharacterContainer extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.3),
+              color: (DateTime.now().hour >= 7 && DateTime.now().hour < 19)
+                  ? Colors.white.withOpacity(0.3)
+                  : Colors.black.withOpacity(0.3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Column(

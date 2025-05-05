@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/calendar.dart';
 import '../navigation/navigation_bar.dart';
+import '../widgets/daily_container.dart'; // if TaskItem is stored here
 
-class CalendarScreen extends StatelessWidget {
+class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
 
   @override
+  State<CalendarScreen> createState() => _CalendarScreenState();
+}
+
+class _CalendarScreenState extends State<CalendarScreen> {
+  DateTime? _selectedDay = DateTime.now();
+
+  void _updateSelectedDay(DateTime? day) {
+    setState(() {
+      _selectedDay = day;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       extendBody: true,
@@ -22,55 +39,75 @@ class CalendarScreen extends StatelessWidget {
               ),
             ),
           ),
-
-          // Aligning the content properly
           Align(
-            alignment: const Alignment(0.0, -0.75), // Centered and slightly shifted up
+            alignment: const Alignment(0.0, -0.75),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Prevents unnecessary stretching
+              mainAxisSize: MainAxisSize.min,
               children: [
-                // Weekly View
-                const Calendar(), // Call the Calendar widget here
-
+                Calendar(onDaySelected: _updateSelectedDay),
                 const SizedBox(height: 40),
+                StreamBuilder(
+                  stream: FirebaseFirestore.instance
+                      .collection('tasks')
+                      .where('userId', isEqualTo: currentUser?.uid)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const CircularProgressIndicator();
+                    }
 
-                // Task placeholder
-                Column(
-                  mainAxisSize: MainAxisSize.min, // Makes the column wrap its content
-                  children: [
-                    // Icon underneath the Calendar
-                    Image.asset('assets/icons/icon-calendar.png', width: 100, height: 150),
+                    final docs = snapshot.data!.docs.where((doc) {
+                      final data = doc.data();
+                      if (data['startDate'] == null) return false;
+                      try {
+                        final taskDate = DateTime.parse(data['startDate']);
+                        return taskDate.year == _selectedDay?.year &&
+                            taskDate.month == _selectedDay?.month &&
+                            taskDate.day == _selectedDay?.day;
+                      } catch (_) {
+                        return false;
+                      }
+                    }).toList();
 
-                    const SizedBox(height: 8), // Adds spacing between the icon and the container
-
-                    // Background container with text inside
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: Colors.indigo.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-
-                      child: Column(
+                    if (docs.isEmpty) {
+                      return Column(
                         children: [
-                          const Text(
-                            "Nothing planned for today",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
+                          Image.asset('assets/icons/icon-calendar.png', width: 100, height: 150),
+                          const SizedBox(height: 8),
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.indigo.withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(15),
                             ),
-                          ),
-                          Text(
-                            "take it easy",
-                            style: TextStyle(
-                                color: Colors.white.withOpacity(0.7),
-                                fontSize: 14
+                            child: const Column(
+                              children: [
+                                Text("Nothing planned for today", style: TextStyle(color: Colors.white, fontSize: 16)),
+                                Text("take it easy", style: TextStyle(color: Colors.white70, fontSize: 14)),
+                              ],
                             ),
                           )
                         ],
-                      ),
-                    ),
-                  ],
+                      );
+                    }
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: docs.length,
+                      itemBuilder: (context, index) {
+                        final data = docs[index].data();
+                        return TaskItem(
+                          taskId: docs[index].id,
+                          title: data['title'],
+                          description: data['description'],
+                          points: data['points'] ?? 0,
+                          user: currentUser,
+                          finished: data['finished'] ?? 0,
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
             ),
@@ -78,9 +115,9 @@ class CalendarScreen extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: CustomBottomNavBar(
-        selectedIndex: 2, // Set index for calendar screen
+        selectedIndex: 2,
         onItemTapped: (index) {
-          // Handle navigation logic
+          // Handle navigation
         },
       ),
     );
