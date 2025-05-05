@@ -20,10 +20,38 @@ class _StatContainerState extends State<StatContainer> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        NameEditRow(user: widget.user),
-        EmailEditRow(user: widget.user),
-        CharacterEditRow(user: widget.user),
-        PetEditRow(user: widget.user)
+        Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: NameEditRow(user: widget.user)
+        ),
+        Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: EmailEditRow(user: widget.user)
+        ),
+        Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: CharacterEditRow(user: widget.user)
+        ),
+        Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: PetEditRow(user: widget.user)
+        ),
       ],
     );
   }
