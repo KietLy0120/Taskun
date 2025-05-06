@@ -1,5 +1,5 @@
 # Taskun: RPG Task Manager App
-
+A gamified productivity app that turns daily tasks into character-driven quests.
 <br></br>
 
 ## Description
